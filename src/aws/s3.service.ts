@@ -65,3 +65,36 @@ export const uploadImage = async (buffer: Buffer, key: string): Promise<string> 
         throw new Error('Failed to upload image');
     }
 };
+
+export const getImageMetadata = async (bucketName: string, keyName: string): Promise<AWS.S3.Metadata> => {
+    const s3 = new AWS.S3();
+
+    const params = {
+        Bucket: bucketName,
+        Key: keyName,
+    };
+
+    try {
+        const s3Object = await s3.getObject(params).promise();
+        return s3Object.Metadata!;
+    } catch (err) {
+        console.error(err);
+        throw new Error('Failed to get image metadata');
+    }
+}
+
+export const imageExists = async (bucketName: string, keyName: string): Promise<boolean> => {
+    const s3 = new AWS.S3();
+
+    const params = {
+        Bucket: bucketName,
+        Key: keyName,
+    };
+
+    try {
+        await s3.headObject(params).promise();
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
