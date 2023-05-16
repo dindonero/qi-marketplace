@@ -24,11 +24,12 @@ export const tokenService = async (id: number): Promise<any> => {
     if (!(await imageExists("yiqi-nft", `${id}.png`)))
         await mintYiqiNFT(id)
 
+    console.log(await getImageMetadata("yiqi-nft", `${id}.png`))
     // return nft json data
     return {
         yiqi_id: id,
         image: `https://yiqi-nft.s3.amazonaws.com/${id}.png`,
-        attributes: getImageMetadata("yiqi-nft", `${id}.png`)
+        attributes: await getImageMetadata("yiqi-nft", `${id}.png`)
     }
 
 

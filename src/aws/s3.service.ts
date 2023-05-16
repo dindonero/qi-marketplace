@@ -47,7 +47,7 @@ export const getRandomImageFromS3Bucket = async (bucketName: string): Promise<S3
     }
 }
 
-export const uploadImage = async (buffer: Buffer, key: string): Promise<string> => {
+export const uploadImage = async (buffer: Buffer, key: string, metadata: any): Promise<string> => {
     const s3 = new AWS.S3();
 
     const params = {
@@ -55,6 +55,7 @@ export const uploadImage = async (buffer: Buffer, key: string): Promise<string> 
         Key: key,
         Body: buffer,
         ContentType: 'image/png',
+        Metadata: metadata
     };
 
     try {

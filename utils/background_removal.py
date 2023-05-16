@@ -2,7 +2,7 @@ import cv2
 import os
 
 # Set the directory where the images are stored
-image_dir = "./KARACTERS/"
+image_dir = "./"
 
 # Loop through each image in the directory
 for filename in os.listdir(image_dir):
@@ -24,5 +24,5 @@ for filename in os.listdir(image_dir):
         # Apply the mask to set the alpha channel of the background pixels to 0
         bgra[:, :, 3] = mask_inv
         # Save the result as a PNG file
-        cv2.imwrite(image_dir + "BACKGROUND_REMOVAL/" + filename.split(".")[0] + "_transparent.png", bgra)
+        cv2.imwrite(image_dir + filename.split(".")[0] + "_transparent.png", bgra)
 
