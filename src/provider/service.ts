@@ -16,11 +16,77 @@ export const getQiBackgroundContract = async () => {
     return new ethers.Contract(qiBackgroundAddress, QiAbi, signer)
 }
 
+export const getBackgroundTokenIdFromYiQiNFT = async (tokenId: number) => {
+    const qiContract = await getQiContract()
+    return qiContract.backgroundTokenId(tokenId)
+}
+
 const getProvider = async (chainId: number) => {
     switch (chainId) {
         case 1:
             return new ethers.JsonRpcProvider(process.env.INFURA_MAINNET_RPC_URL!)
         case 5:
             return new ethers.JsonRpcProvider(process.env.INFURA_GOERLI_RPC_URL!)
+    }
+}
+
+export const verifyYiQiNFTExists = async (tokenId: number) => {
+    // verify qiNFT exists in nft collection
+    const qiContract = await getQiContract()
+    await verifyTokenExists(qiContract, tokenId)
+}
+
+export const verifyBackgroundExists = async (tokenId: number) => {
+    const qiBackgroundContract = await getQiBackgroundContract()
+    await verifyTokenExists(qiBackgroundContract, tokenId)
+}
+
+const verifyTokenExists = async (contract: ethers.Contract, tokenId: number) => {
+    try {
+        await contract.ownerOf(tokenId)
+    } catch (error: any) {
+        if (error.reason === "ERC721: invalid token ID")
+            throw new Error(`Token ${tokenId} has not been minted yet or has been burned`)
+        else
+            throw new Error(error.reason)
+    }
+}
+
+export const verifySignature = async (message: string, signature: string, address: string) => {
+    const recoveredAddress = ethers.verifyMessage(message, signature);
+    if (recoveredAddress !== address) {
+        throw new Error("Signature does not match the provided Ethereum address")
+    }
+}
+
+export const verifyYiQiOwnership = async (tokenId: number, address: string) => {
+    const qiContract = await getQiContract()
+    try {
+        await qiContract.ownerOf(tokenId)
+    } catch (error: any) {
+        if (error.reason === "ERC721: invalid token ID")
+            throw new Error(`Token ${tokenId} has not been minted yet or has been burned`)
+        else
+            throw new Error(error.reason)
+    }
+    const owner = await qiContract.ownerOf(tokenId)
+    if (owner !== address) {
+        throw new Error(`YiQi NFT ${tokenId} is not owned by you`)
+    }
+}
+
+export const verifyYiQiBackgroundOwnership = async (tokenId: number, address: string) => {
+    const qiBackgroundContract = await getQiBackgroundContract()
+    try {
+        await qiBackgroundContract.ownerOf(tokenId)
+    } catch (error: any) {
+        if (error.reason === "ERC721: invalid token ID")
+            throw new Error(`Token ${tokenId} has not been minted yet or has been burned`)
+        else
+            throw new Error(error.reason)
+    }
+    const owner = await qiBackgroundContract.ownerOf(tokenId)
+    if (owner !== address) {
+        throw new Error(`YiQi Background ${tokenId} is not owned by you`)
     }
 }

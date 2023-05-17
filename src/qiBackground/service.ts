@@ -1,22 +1,11 @@
 import {getQiBackgroundContract} from "@/provider/service";
 import {S3Image} from "@/aws/S3Image.type";
-import {getImageMetadata, getRandomImageFromS3Bucket} from "@/aws/s3.service";
+import {getImageFromS3Bucket, getImageMetadata, getRandomImageFromS3Bucket} from "@/aws/s3.service";
 import {QI_BACKGROUND_BUCKET} from "@/aws/aws-helper-config";
 import {backgroundExists, getBackgroundByTokenId, storeBackground} from "@/qiBackground/db.service";
 
 
 export const getQiBackground = async (tokenId: number) => {
-
-    const qiBackgroundContract = await getQiBackgroundContract()
-
-    try {
-        await qiBackgroundContract.ownerOf(tokenId)
-    } catch (error: any) {
-        if (error.reason === "ERC721: invalid qiNFT ID")
-            throw new Error(`Token ${tokenId} has not been minted yet or has been burned`)
-        else
-            throw new Error(error.reason)
-    }
 
     let backgroundKey
 
@@ -36,4 +25,12 @@ export const getQiBackground = async (tokenId: number) => {
     }
 
 
+}
+
+export const getBackgroundImage = async (tokenId: number) => {
+
+    const backgroundObj = await getBackgroundByTokenId(tokenId)
+    const backgroundKey = backgroundObj!.fileName.S!
+
+    return getImageFromS3Bucket(QI_BACKGROUND_BUCKET, backgroundKey)
 }

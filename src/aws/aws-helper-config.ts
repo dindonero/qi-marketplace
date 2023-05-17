@@ -7,6 +7,5 @@ export const QI_BACKGROUND_BUCKET = "yiqi-background"
 
 export const BACKGROUND_TABLE_NAME = "background"
 
-export const QI_NFT_TABLE_NAME = "yiqi-nft"
-
+export const NFT_TABLE_NAME = "yiqi-nft"
 export const DEFAULT_REGION = "eu-north-1"

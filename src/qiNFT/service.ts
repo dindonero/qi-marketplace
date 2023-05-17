@@ -1,21 +1,18 @@
 import {imageMerge} from "@/image-merge/service";
-import {getImageMetadata, getRandomImageFromS3Bucket, imageExists} from "@/aws/s3.service";
-import {getQiContract} from "@/provider/service";
+import {
+    getImageFromS3Bucket,
+    getImageMetadata,
+    getRandomImageFromS3Bucket,
+    imageExists,
+    uploadImage
+} from "@/aws/s3.service";
 import {QI_BACKGROUND_BUCKET, QI_NFT_BUCKET, QI_TRANSPARENT_BUCKET} from "@/aws/aws-helper-config";
 import {S3Image} from "@/aws/S3Image.type";
+import {getAllYiQiBaseFiles, getYiQiNFTByTokenId, storeYiQiNFT} from "@/qiNFT/db.service";
+import {storeBackground} from "@/qiBackground/db.service";
+import {getBackgroundTokenIdFromYiQiNFT} from "@/provider/service";
 
 export const getQiNFT = async (id: number): Promise<any> => {
-
-    // verify qiNFT exists in nft collection
-    const qiContract = await getQiContract()
-    try {
-        await qiContract.ownerOf(id)
-    } catch (error: any) {
-        if (error.reason === "ERC721: invalid qiNFT ID")
-            throw new Error(`Token ${id} has not been minted yet or has been burned`)
-        else
-            throw new Error(error.reason)
-    }
 
     // if image is not uploaded on s3, generate nft image and upload it
     if (!(await imageExists(QI_NFT_BUCKET, `${id}.png`)))
@@ -29,12 +26,26 @@ export const getQiNFT = async (id: number): Promise<any> => {
     }
 }
 
+export const getYiQiBaseImage = async (tokenId: number) => {
+
+    const yiQiNFT = await getYiQiNFTByTokenId(tokenId)
+    const baseImageKey = yiQiNFT!.fileName.S!
+
+    return getImageFromS3Bucket(QI_TRANSPARENT_BUCKET, baseImageKey)
+}
+
 export const mintYiqiNFT = async (tokenId: number) => {
 
-    const mainImageObj: S3Image = await getRandomImageFromS3Bucket(QI_TRANSPARENT_BUCKET)
+    const usedBaseImages = await getAllYiQiBaseFiles()
+
+    const mainImageObj: S3Image = await getRandomImageFromS3Bucket(QI_TRANSPARENT_BUCKET, usedBaseImages)
     const backgroundImageObj: S3Image = await getRandomImageFromS3Bucket(QI_BACKGROUND_BUCKET)
 
-    const nftUrl = await imageMerge(mainImageObj, backgroundImageObj, tokenId) // TODO: change tokenId to be dynamic
+    await storeYiQiNFT(tokenId, mainImageObj.key)
+    await storeBackground(await getBackgroundTokenIdFromYiQiNFT(tokenId), backgroundImageObj.key)
+
+    const yiQiImageBuffer = await imageMerge(mainImageObj, backgroundImageObj, tokenId)
+    const nftUrl = await uploadImage(yiQiImageBuffer, `${tokenId}.png`, {...mainImageObj.metadata, ...backgroundImageObj.metadata});
 
     console.log(nftUrl);
 }

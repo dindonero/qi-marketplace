@@ -16,35 +16,39 @@ export const getImageFromS3Bucket = async (bucketName: string, key: string): Pro
 
     const s3Object = await s3.getObject(getObjectParams).promise();
 
-    return { key: key, body: s3Object.Body as Buffer, metadata: s3Object.Metadata! };
+    return {key: key, body: s3Object.Body as Buffer, metadata: s3Object.Metadata!};
 }
-export const getRandomImageFromS3Bucket = async (bucketName: string): Promise<S3Image> => {
+export const getRandomImageFromS3Bucket = async (bucketName: string, usedImageKeys?: string[]): Promise<S3Image> => {
     const s3 = new AWS.S3();
 
-    try {
-        const listParams = {
-            Bucket: bucketName
-        };
-        const s3ObjectList = await s3.listObjectsV2(listParams).promise();
+    const listParams = {
+        Bucket: bucketName
+    };
+    const s3ObjectList = await s3.listObjectsV2(listParams).promise();
 
-        if (!s3ObjectList.Contents || s3ObjectList.Contents.length === 0) {
-            throw new Error(`No objects found in bucket ${bucketName}`);
-        }
-
-        const randomIndex = Math.floor(Math.random() * s3ObjectList.Contents.length);
-        const randomObjectKey = s3ObjectList.Contents[randomIndex].Key!;
-        const getObjectParams = {
-            Bucket: bucketName,
-            Key: randomObjectKey
-        };
-
-        const s3Object = await s3.getObject(getObjectParams).promise();
-
-        return { key: randomObjectKey, body: s3Object.Body as Buffer, metadata: s3Object.Metadata! };
-    } catch (error) {
-        console.error(error);
-        throw error;
+    if (!s3ObjectList.Contents || s3ObjectList.Contents.length === 0) {
+        throw new Error(`No objects found in bucket ${bucketName}`);
     }
+
+    // Remove used images from list
+    if (usedImageKeys) {
+        const unusedImages = s3ObjectList.Contents.filter((s3Object) => !usedImageKeys.includes(s3Object.Key!));
+        if (unusedImages.length === 0) {
+            throw new Error(`No unused objects found in bucket ${bucketName}`);
+        }
+        s3ObjectList.Contents = unusedImages;
+    }
+
+    const randomIndex = Math.floor(Math.random() * s3ObjectList.Contents.length);
+    const randomObjectKey = s3ObjectList.Contents[randomIndex].Key!;
+    const getObjectParams = {
+        Bucket: bucketName,
+        Key: randomObjectKey
+    };
+
+    const s3Object = await s3.getObject(getObjectParams).promise();
+
+    return {key: randomObjectKey, body: s3Object.Body as Buffer, metadata: s3Object.Metadata!};
 }
 
 export const uploadImage = async (buffer: Buffer, key: string, metadata: any): Promise<string> => {
@@ -77,7 +81,7 @@ export const getImageMetadata = async (bucketName: string, keyName: string) => {
 
     try {
         const s3Object = await s3.getObject(params).promise();
-        return Object.entries(s3Object.Metadata!).map(([trait_type, value]) => ({ trait_type, value }));
+        return Object.entries(s3Object.Metadata!).map(([trait_type, value]) => ({trait_type, value}));
     } catch (err) {
         console.error(err);
         throw new Error('Failed to get image metadata');

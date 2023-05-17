@@ -9,9 +9,7 @@ export const imageMerge = async (mainImage: S3Image, backgroundImage: S3Image, t
         .resize(1024, 1024, {fit: 'contain'})
         .toBuffer();
 
-    const mergedImageBuffer = await sharp(resizedBackgroundBuffer)
+    return sharp(resizedBackgroundBuffer)
         .composite([{input: mainImage.body, gravity: 'south'}])
         .toBuffer();
-
-    return uploadImage(mergedImageBuffer, `${tokenId}.png`, {...mainImage.metadata, ...backgroundImage.metadata});
 }

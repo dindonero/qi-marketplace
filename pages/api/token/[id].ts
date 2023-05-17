@@ -1,5 +1,6 @@
 import {NextApiRequest, NextApiResponse} from "next";
 import {getQiNFT} from "@/qiNFT/service";
+import {verifyYiQiNFTExists} from "@/provider/service";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
@@ -7,10 +8,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const tokenId = +id!
 
     try {
+        await verifyYiQiNFTExists(tokenId)
         const jsonResponse = await getQiNFT(tokenId)
         res.status(200).json(jsonResponse)
     } catch (error: any) {
         console.log(error)
-        res.status(500).json({error: error.message})
+        res.status(400).json({error: error.message})
     }
 }
