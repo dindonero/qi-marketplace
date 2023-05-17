@@ -2,8 +2,8 @@ import AWS from 'aws-sdk';
 import {S3Image} from "./S3Image.type";
 
 AWS.config.credentials = new AWS.Credentials({
-    accessKeyId: 'AKIAUNWF6BHQVLSM3NEM',
-    secretAccessKey: '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'
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!
 });
 
 export const getImageFromS3Bucket = async (bucketName: string, key: string): Promise<S3Image> => {
@@ -67,7 +67,7 @@ export const uploadImage = async (buffer: Buffer, key: string, metadata: any): P
     }
 };
 
-export const getImageMetadata = async (bucketName: string, keyName: string): Promise<AWS.S3.Metadata> => {
+export const getImageMetadata = async (bucketName: string, keyName: string) => {
     const s3 = new AWS.S3();
 
     const params = {
@@ -77,7 +77,7 @@ export const getImageMetadata = async (bucketName: string, keyName: string): Pro
 
     try {
         const s3Object = await s3.getObject(params).promise();
-        return s3Object.Metadata!;
+        return Object.entries(s3Object.Metadata!).map(([trait_type, value]) => ({ trait_type, value }));
     } catch (err) {
         console.error(err);
         throw new Error('Failed to get image metadata');

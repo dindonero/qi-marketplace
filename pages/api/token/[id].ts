@@ -1,13 +1,13 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {tokenService} from "@/token/service";
+import {getQiNFT} from "@/qiNFT/service";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
 
-    const resolvedData = +id!
+    const tokenId = +id!
 
     try {
-        const jsonResponse = await tokenService(resolvedData)
+        const jsonResponse = await getQiNFT(tokenId)
         res.status(200).json(jsonResponse)
     } catch (error: any) {
         console.log(error)
