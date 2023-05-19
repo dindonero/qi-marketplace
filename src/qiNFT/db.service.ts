@@ -12,18 +12,20 @@ export const getYiQiNFTByTokenId = async (tokenId: number) => {
     };
     const command = new GetItemCommand(params)
     const result = await ddbClient.send(command)
-    return result.Item;
+    return result.Item!;
 }
 
 export const getAllYiQiBaseFiles = async () => {
-    const command = new DescribeTableCommand({ TableName: NFT_TABLE_NAME });
+    const fileNameAttribute = "fileName";
+    const command = new ScanCommand({ TableName: NFT_TABLE_NAME, ProjectionExpression: fileNameAttribute });
+
     const response = await ddbClient.send(command);
 
-    if (!response.Table?.AttributeDefinitions) {
-        throw new Error("Table schema not found");
+    if (!response.Items) {
+        throw new Error("No items found");
     }
 
-    return response.Table.AttributeDefinitions.map((attr) => attr.AttributeName!);
+    return response.Items.map((item) => item[fileNameAttribute].S!);
 }
 
 export const storeYiQiNFT = async (tokenId: number, fileName: string) => {

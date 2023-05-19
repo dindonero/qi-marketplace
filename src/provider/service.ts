@@ -18,7 +18,7 @@ export const getQiBackgroundContract = async () => {
 
 export const getBackgroundTokenIdFromYiQiNFT = async (tokenId: number) => {
     const qiContract = await getQiContract()
-    return qiContract.backgroundTokenId(tokenId)
+    return qiContract.s_tokenIdToQiBackgroundId(tokenId)
 }
 
 const getProvider = async (chainId: number) => {
