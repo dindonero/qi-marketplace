@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {getYiqiNFT} from "@/yiqiNFT/service";
-import {verifyYiqiNFTExists} from "@/provider/service";
+import {getYiqiNFT} from "@/api/yiqiNFT/service";
+import {verifyYiqiNFTExists} from "@/api/provider/service";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;

@@ -1,7 +1,7 @@
-import {getYiqiBaseImage} from "@/yiqiNFT/service";
-import {getBackgroundImage} from "@/yiqiBackground/service";
-import {imageMerge} from "@/image-merge/service";
-import {uploadImage} from "@/aws/s3.service";
+import {getYiqiBaseImage} from "@/api/yiqiNFT/service";
+import {getBackgroundImage} from "@/api/yiqiBackground/service";
+import {imageMerge} from "@/api/image-merge/service";
+import {uploadImage} from "@/api/aws/s3.service";
 
 
 export const changeBackground = async (tokenId: number, backgroundTokenId: number) => {

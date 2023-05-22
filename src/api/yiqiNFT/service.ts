@@ -1,16 +1,16 @@
-import {imageMerge} from "@/image-merge/service";
+import {imageMerge} from "@/api/image-merge/service";
 import {
     getImageFromS3Bucket,
     getImageMetadata,
     getRandomImageFromS3Bucket,
     imageExists,
     uploadImage
-} from "@/aws/s3.service";
-import {QI_BACKGROUND_BUCKET, QI_NFT_BUCKET, QI_TRANSPARENT_BUCKET} from "@/aws/aws-helper-config";
-import {S3Image} from "@/aws/S3Image.type";
-import {getAllYiqiBaseFiles, getYiqiNFTByTokenId, storeYiqiNFT} from "@/yiqiNFT/db.service";
-import {backgroundExists, getBackgroundByTokenId, storeBackground} from "@/yiqiBackground/db.service";
-import {getBackgroundTokenIdFromYiqiNFT} from "@/provider/service";
+} from "@/api/aws/s3.service";
+import {QI_BACKGROUND_BUCKET, QI_NFT_BUCKET, QI_TRANSPARENT_BUCKET} from "@/api/aws/aws-helper-config";
+import {S3Image} from "@/api/aws/S3Image.type";
+import {getAllYiqiBaseFiles, getYiqiNFTByTokenId, storeYiqiNFT} from "@/api/yiqiNFT/db.service";
+import {backgroundExists, getBackgroundByTokenId, storeBackground} from "@/api/yiqiBackground/db.service";
+import {getBackgroundTokenIdFromYiqiNFT} from "@/api/provider/service";
 
 export const getYiqiNFT = async (id: number): Promise<any> => {
 

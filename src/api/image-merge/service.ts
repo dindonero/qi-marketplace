@@ -1,6 +1,6 @@
 import sharp from 'sharp';
-import {uploadImage} from "@/aws/s3.service";
-import {S3Image} from "@/aws/S3Image.type";
+import {uploadImage} from "@/api/aws/s3.service";
+import {S3Image} from "@/api/aws/S3Image.type";
 
 
 export const imageMerge = async (mainImage: S3Image, backgroundImage: S3Image, tokenId: number) => {

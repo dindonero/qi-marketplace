@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {verifySignature, verifyYiqiBackgroundOwnership, verifyYiqiOwnership} from "@/provider/service";
-import {changeBackground} from "@/change-background/service";
+import {verifySignature, verifyYiqiBackgroundOwnership, verifyYiqiOwnership} from "@/api/provider/service";
+import {changeBackground} from "@/api/change-background/service";
 
 export default async function index(
     req: NextApiRequest,

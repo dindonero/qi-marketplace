@@ -1,4 +1,4 @@
-import {DEFAULT_REGION} from "@/aws/aws-helper-config";
+import {DEFAULT_REGION} from "@/api/aws/aws-helper-config";
 import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 
 

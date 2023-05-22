@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {getYiqiBackground} from "@/yiqiBackground/service";
-import {verifyBackgroundExists} from "@/provider/service";
+import {getYiqiBackground} from "@/api/yiqiBackground/service";
+import {verifyBackgroundExists} from "@/api/provider/service";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

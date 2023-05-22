@@ -1,7 +1,7 @@
 import {ethers} from "ethers";
-import networkMapping from "../../constants/networkMapping.json";
-import YiqiAbi from "../../constants/Yiqi.json";
-import YiqiBackgroundAbi from "../../constants/YiqiBackground.json";
+import networkMapping from "../../../constants/networkMapping.json";
+import YiqiAbi from "../../../constants/Yiqi.json";
+import YiqiBackgroundAbi from "../../../constants/YiqiBackground.json";
 
 export const getYiqiContract = async () => {
     const provider = await getProvider(5)

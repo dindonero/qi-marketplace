@@ -1,6 +1,6 @@
-import {BACKGROUND_TABLE_NAME, NFT_TABLE_NAME} from "@/aws/aws-helper-config";
+import {BACKGROUND_TABLE_NAME, NFT_TABLE_NAME} from "@/api/aws/aws-helper-config";
 import {DescribeTableCommand, GetItemCommand, PutItemCommand, ScanCommand} from "@aws-sdk/client-dynamodb";
-import {ddbClient} from "@/aws/dynamoDB.config";
+import {ddbClient} from "@/api/aws/dynamoDB.config";
 
 export const getYiqiNFTByTokenId = async (tokenId: number) => {
 
