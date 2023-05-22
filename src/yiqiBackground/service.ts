@@ -1,11 +1,11 @@
-import {getQiBackgroundContract} from "@/provider/service";
+import {getYiqiBackgroundContract} from "@/provider/service";
 import {S3Image} from "@/aws/S3Image.type";
 import {getImageFromS3Bucket, getImageMetadata, getRandomImageFromS3Bucket} from "@/aws/s3.service";
 import {QI_BACKGROUND_BUCKET} from "@/aws/aws-helper-config";
-import {backgroundExists, getBackgroundByTokenId, storeBackground} from "@/qiBackground/db.service";
+import {backgroundExists, getBackgroundByTokenId, storeBackground} from "@/yiqiBackground/db.service";
 
 
-export const getQiBackground = async (tokenId: number) => {
+export const getYiqiBackground = async (tokenId: number) => {
 
     let backgroundKey
 

@@ -1,24 +1,25 @@
 import {ethers} from "ethers";
 import networkMapping from "../../constants/networkMapping.json";
-import QiAbi from "../../constants/Qi.json";
+import YiqiAbi from "../../constants/Yiqi.json";
+import YiqiBackgroundAbi from "../../constants/YiqiBackground.json";
 
-export const getQiContract = async () => {
+export const getYiqiContract = async () => {
     const provider = await getProvider(5)
     const signer = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
-    const qiAddress = networkMapping["5"].Qi[networkMapping["5"].Qi.length - 1]
-    return new ethers.Contract(qiAddress, QiAbi, signer)
+    const yiqiAddress = networkMapping["5"].Yiqi[networkMapping["5"].Yiqi.length - 1]
+    return new ethers.Contract(yiqiAddress, YiqiAbi, signer)
 }
 
-export const getQiBackgroundContract = async () => {
+export const getYiqiBackgroundContract = async () => {
     const provider = await getProvider(5)
     const signer = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
-    const qiBackgroundAddress = networkMapping["5"].QiBackground[networkMapping["5"].QiBackground.length - 1]
-    return new ethers.Contract(qiBackgroundAddress, QiAbi, signer)
+    const yiqiBackgroundAddress = networkMapping["5"].YiqiBackground[networkMapping["5"].YiqiBackground.length - 1]
+    return new ethers.Contract(yiqiBackgroundAddress, YiqiBackgroundAbi, signer)
 }
 
-export const getBackgroundTokenIdFromYiQiNFT = async (tokenId: number) => {
-    const qiContract = await getQiContract()
-    return qiContract.s_tokenIdToQiBackgroundId(tokenId)
+export const getBackgroundTokenIdFromYiqiNFT = async (tokenId: number) => {
+    const yiqiContract = await getYiqiContract()
+    return yiqiContract.getBackgroundFromTokenId(tokenId)
 }
 
 const getProvider = async (chainId: number) => {
@@ -30,15 +31,15 @@ const getProvider = async (chainId: number) => {
     }
 }
 
-export const verifyYiQiNFTExists = async (tokenId: number) => {
-    // verify qiNFT exists in nft collection
-    const qiContract = await getQiContract()
-    await verifyTokenExists(qiContract, tokenId)
+export const verifyYiqiNFTExists = async (tokenId: number) => {
+    // verify yiqiNFT exists in nft collection
+    const yiqiContract = await getYiqiContract()
+    await verifyTokenExists(yiqiContract, tokenId)
 }
 
 export const verifyBackgroundExists = async (tokenId: number) => {
-    const qiBackgroundContract = await getQiBackgroundContract()
-    await verifyTokenExists(qiBackgroundContract, tokenId)
+    const yiqiBackgroundContract = await getYiqiBackgroundContract()
+    await verifyTokenExists(yiqiBackgroundContract, tokenId)
 }
 
 const verifyTokenExists = async (contract: ethers.Contract, tokenId: number) => {
@@ -59,34 +60,34 @@ export const verifySignature = async (message: string, signature: string, addres
     }
 }
 
-export const verifyYiQiOwnership = async (tokenId: number, address: string) => {
-    const qiContract = await getQiContract()
+export const verifyYiqiOwnership = async (tokenId: number, address: string) => {
+    const yiqiContract = await getYiqiContract()
     try {
-        await qiContract.ownerOf(tokenId)
+        await yiqiContract.ownerOf(tokenId)
     } catch (error: any) {
         if (error.reason === "ERC721: invalid token ID")
             throw new Error(`Token ${tokenId} has not been minted yet or has been burned`)
         else
             throw new Error(error.reason)
     }
-    const owner = await qiContract.ownerOf(tokenId)
+    const owner = await yiqiContract.ownerOf(tokenId)
     if (owner !== address) {
-        throw new Error(`YiQi NFT ${tokenId} is not owned by you`)
+        throw new Error(`Yiqi NFT ${tokenId} is not owned by you`)
     }
 }
 
-export const verifyYiQiBackgroundOwnership = async (tokenId: number, address: string) => {
-    const qiBackgroundContract = await getQiBackgroundContract()
+export const verifyYiqiBackgroundOwnership = async (tokenId: number, address: string) => {
+    const yiqiBackgroundContract = await getYiqiBackgroundContract()
     try {
-        await qiBackgroundContract.ownerOf(tokenId)
+        await yiqiBackgroundContract.ownerOf(tokenId)
     } catch (error: any) {
         if (error.reason === "ERC721: invalid token ID")
             throw new Error(`Token ${tokenId} has not been minted yet or has been burned`)
         else
             throw new Error(error.reason)
     }
-    const owner = await qiBackgroundContract.ownerOf(tokenId)
+    const owner = await yiqiBackgroundContract.ownerOf(tokenId)
     if (owner !== address) {
-        throw new Error(`YiQi Background ${tokenId} is not owned by you`)
+        throw new Error(`Yiqi Background ${tokenId} is not owned by you`)
     }
 }

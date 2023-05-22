@@ -2,7 +2,7 @@ import {BACKGROUND_TABLE_NAME, NFT_TABLE_NAME} from "@/aws/aws-helper-config";
 import {DescribeTableCommand, GetItemCommand, PutItemCommand, ScanCommand} from "@aws-sdk/client-dynamodb";
 import {ddbClient} from "@/aws/dynamoDB.config";
 
-export const getYiQiNFTByTokenId = async (tokenId: number) => {
+export const getYiqiNFTByTokenId = async (tokenId: number) => {
 
     const params = {
         TableName: NFT_TABLE_NAME,
@@ -15,7 +15,7 @@ export const getYiQiNFTByTokenId = async (tokenId: number) => {
     return result.Item!;
 }
 
-export const getAllYiQiBaseFiles = async () => {
+export const getAllYiqiBaseFiles = async () => {
     const fileNameAttribute = "fileName";
     const command = new ScanCommand({ TableName: NFT_TABLE_NAME, ProjectionExpression: fileNameAttribute });
 
@@ -28,7 +28,7 @@ export const getAllYiQiBaseFiles = async () => {
     return response.Items.map((item) => item[fileNameAttribute].S!);
 }
 
-export const storeYiQiNFT = async (tokenId: number, fileName: string) => {
+export const storeYiqiNFT = async (tokenId: number, fileName: string) => {
     const params = {
         TableName: NFT_TABLE_NAME,
         Item: {
@@ -40,7 +40,7 @@ export const storeYiQiNFT = async (tokenId: number, fileName: string) => {
     await ddbClient.send(command);
 }
 
-export const yiQiNFTExists = async (tokenId: number) => {
+export const yiqiNFTExists = async (tokenId: number) => {
     const params = {
         TableName: NFT_TABLE_NAME,
         Key: {

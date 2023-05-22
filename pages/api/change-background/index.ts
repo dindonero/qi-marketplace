@@ -1,5 +1,5 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {verifySignature, verifyYiQiBackgroundOwnership, verifyYiQiOwnership} from "@/provider/service";
+import {verifySignature, verifyYiqiBackgroundOwnership, verifyYiqiOwnership} from "@/provider/service";
 import {changeBackground} from "@/change-background/service";
 
 export default async function index(
@@ -10,15 +10,15 @@ export default async function index(
 
     // Verify that the provided signature matches the Ethereum address
     const message = `Sign this message to authorize the following operation:
-- Operation: Change YiQi background
+- Operation: Change Yiqi background
 - Ethereum address: ${ethereumAddress}
 - Token ID: ${tokenId}
 - New background token ID: ${backgroundTokenId}
 `;
     try {
         await verifySignature(message, signature, ethereumAddress);
-        await verifyYiQiOwnership(tokenId, ethereumAddress);
-        await verifyYiQiBackgroundOwnership(backgroundTokenId, ethereumAddress);
+        await verifyYiqiOwnership(tokenId, ethereumAddress);
+        await verifyYiqiBackgroundOwnership(backgroundTokenId, ethereumAddress);
 
         await changeBackground(tokenId, backgroundTokenId);
 

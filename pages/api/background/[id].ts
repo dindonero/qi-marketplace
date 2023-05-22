@@ -1,8 +1,6 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {getQiBackground} from "@/qiBackground/service";
-import {changeBackground} from "@/change-background/service";
+import {getYiqiBackground} from "@/yiqiBackground/service";
 import {verifyBackgroundExists} from "@/provider/service";
-import {getAllYiQiBaseFiles} from "@/qiNFT/db.service";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         await verifyBackgroundExists(tokenId)
-        const jsonResponse = await getQiBackground(tokenId)
+        const jsonResponse = await getYiqiBackground(tokenId)
         res.status(200).json(jsonResponse)
     } catch (error: any) {
         console.log(error)
