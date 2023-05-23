@@ -1,5 +1,7 @@
 import {createContext, FC, ReactNode, useContext, useEffect, useState} from "react";
 import {useMoralis} from "react-moralis";
+import networkMapping from "../constants/networkMapping.json"
+import {CHAINID} from "../constants/chainId";
 
 type AppContextType = {
     isConnectedToCorrectChain: boolean
@@ -12,11 +14,9 @@ export const AppContextProvider: FC<{ children?: ReactNode | undefined }> = prop
     const [isConnectedToCorrectChain, setIsConnectedToCorrectChain] = useState(false)
 
     const checkChainId = () => {
-        if (!isWeb3Enabled || (+Moralis.chainId!).toString() === "5") {
-            setIsConnectedToCorrectChain(false)
-        } else {
-            setIsConnectedToCorrectChain(true)
-        }
+        console.log((+Moralis.chainId!) === CHAINID)
+        console.log(+Moralis.chainId!, CHAINID)
+        setIsConnectedToCorrectChain(isWeb3Enabled && ((+Moralis.chainId!) !== CHAINID));
     }
 
     useEffect(() => {

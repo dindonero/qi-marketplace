@@ -6,6 +6,7 @@ import NetworkBanner from "../components/NetworkBanner"
 import {NotificationProvider} from "web3uikit"
 import Header from "../components/Header"
 import {AppContextProvider} from "../contexts/AppConfig";
+import Mint from "../components/Mint";
 
 function App({Component, pageProps}: AppProps) {
     return (
@@ -19,6 +20,7 @@ function App({Component, pageProps}: AppProps) {
                     <NotificationProvider>
                         <NetworkBanner/>
                         <Header/>
+                        <Mint/>
                         <Component {...pageProps} />
                     </NotificationProvider>
                 </AppContextProvider>
