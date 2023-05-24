@@ -13,7 +13,7 @@ export default function Header() {
                 {/*<Link href="/">
                     <a className="mr-4 p-6">Home</a>
                 </Link>*/}
-                {/*<Link href="/mint"><a className="mr-4 p-6">Mint Yiqi</a></Link>*/}
+                {/*<Link href="/mint"><a className="mr-4 p-6">MintButton Yiqi</a></Link>*/}
                 <ConnectButton moralisAuth={false} />
             </div>
         </nav>

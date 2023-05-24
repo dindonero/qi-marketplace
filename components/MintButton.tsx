@@ -5,8 +5,10 @@ import { ethers } from 'ethers';
 import YiqiAbi from '../constants/Yiqi.json';
 import { CHAINID } from '../constants/chainId';
 import networkMapping from "../constants/networkMapping.json";
+import {util} from "zod";
+import objectKeys = util.objectKeys;
 
-const ContractFunctionCaller: React.FC = () => {
+export const MintButton: React.FC = () => {
     const dispatch = useNotification();
 
     //get moralis
@@ -34,7 +36,7 @@ const ContractFunctionCaller: React.FC = () => {
             console.error('Error calling contract function:', error);
             dispatch({
                 type: "error",
-                message: error.message ? error.message : "Yiqi minted failed",
+                message: error.info.error.message ? error.info.error.message : "Yiqi minted failed",
                 title: "NFT Mint Failed",
                 position: "topR"
             })
@@ -50,5 +52,3 @@ const ContractFunctionCaller: React.FC = () => {
         </div>
     );
 };
-
-export default ContractFunctionCaller;
