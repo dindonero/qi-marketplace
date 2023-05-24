@@ -16,7 +16,11 @@ export const MintButton: React.FC = () => {
 
     const [isMinting, setIsMinting] = React.useState(false);
 
-    // Use ethers for contract function call
+    const requestNFTBackend = async (tokenId: number) => {
+        const nftMetadata = await fetch(`https://localhost:3000/api/token/${tokenId}`)
+        console.log(nftMetadata)
+    }
+
     const callMintFunction = async () => {
         try {
             setIsMinting(true);
@@ -25,7 +29,9 @@ export const MintButton: React.FC = () => {
             const yiqiAddress = networkMapping[CHAINID].Yiqi[networkMapping[CHAINID].Yiqi.length - 1]
             const yiqiContract = new ethers.Contract(yiqiAddress, YiqiAbi, await provider.getSigner());
             const mintTx = await yiqiContract.mint({value: ethers.parseEther("0.1")});
-            await mintTx.wait(1);
+            const txReceipt = await mintTx.wait(1);
+            console.log(txReceipt)
+            // todo retrieve tokenId from txReceipt
             dispatch({
                 type: "success",
                 message: "Yiqi minted successfully",
