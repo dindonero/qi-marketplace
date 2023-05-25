@@ -1,12 +1,11 @@
 import React from 'react';
-import {useMoralis, useWeb3Contract} from "react-moralis";
+import {useMoralis} from "react-moralis";
 import {Button, useNotification} from 'web3uikit';
-import { ethers } from 'ethers';
+import {ContractTransactionReceipt, ethers} from 'ethers';
 import YiqiAbi from '../constants/Yiqi.json';
-import { CHAINID } from '../constants/chainId';
+import {CHAINID} from '../constants/chainId';
 import networkMapping from "../constants/networkMapping.json";
 import {util} from "zod";
-import objectKeys = util.objectKeys;
 
 export const MintButton: React.FC = () => {
     const dispatch = useNotification();
@@ -17,8 +16,7 @@ export const MintButton: React.FC = () => {
     const [isMinting, setIsMinting] = React.useState(false);
 
     const requestNFTBackend = async (tokenId: number) => {
-        const nftMetadata = await fetch(`https://localhost:3000/api/token/${tokenId}`)
-        console.log(nftMetadata)
+        return fetch(`https://localhost:3000/api/token/${tokenId}`)
     }
 
     const callMintFunction = async () => {
@@ -29,8 +27,13 @@ export const MintButton: React.FC = () => {
             const yiqiAddress = networkMapping[CHAINID].Yiqi[networkMapping[CHAINID].Yiqi.length - 1]
             const yiqiContract = new ethers.Contract(yiqiAddress, YiqiAbi, await provider.getSigner());
             const mintTx = await yiqiContract.mint({value: ethers.parseEther("0.1")});
-            const txReceipt = await mintTx.wait(1);
-            console.log(txReceipt)
+
+            const contractTxReceipt: ContractTransactionReceipt = await mintTx.wait(1);
+            const txReceipt = await provider.getTransactionReceipt(contractTxReceipt.hash);
+            const tokenId = +txReceipt!.logs.slice(-1)[0].topics[3];
+
+            const nftMetadata = await requestNFTBackend(tokenId)
+            console.log(nftMetadata)
             // todo retrieve tokenId from txReceipt
             dispatch({
                 type: "success",
@@ -42,7 +45,7 @@ export const MintButton: React.FC = () => {
             console.error('Error calling contract function:', error);
             dispatch({
                 type: "error",
-                message: error.info.error.message ? error.info.error.message : "Yiqi minted failed",
+                message: error.info?.error?.message ? error.info.error.message : "Yiqi minted failed",
                 title: "NFT Mint Failed",
                 position: "topR"
             })
