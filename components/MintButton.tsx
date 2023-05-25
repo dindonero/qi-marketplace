@@ -6,6 +6,7 @@ import YiqiAbi from '../constants/Yiqi.json';
 import {CHAINID} from '../constants/chainId';
 import networkMapping from "../constants/networkMapping.json";
 import {AppContext} from "../contexts/AppConfig";
+import {requestNFTMetadataBackend} from "@/nftMetadata/fetchMetadata";
 
 export const MintButton: React.FC = () => {
 
@@ -15,11 +16,6 @@ export const MintButton: React.FC = () => {
     const dispatch = useNotification();
 
     const [isMinting, setIsMinting] = React.useState(false);
-
-    const requestNFTBackend = async (tokenId: number) => {
-        const response = await fetch(`http://localhost:3000/api/token/${tokenId}`)
-        return response.json()
-    }
 
     const callMintFunction = async () => {
         try {
@@ -33,7 +29,7 @@ export const MintButton: React.FC = () => {
             const contractTxReceipt: ContractTransactionReceipt = await mintTx.wait(1);
             const txReceipt = await provider.getTransactionReceipt(contractTxReceipt.hash);
             const tokenId = +txReceipt!.logs.slice(-1)[0].topics[2];
-            const nftMetadata = await requestNFTBackend(tokenId)
+            const nftMetadata = await requestNFTMetadataBackend(tokenId)
 
             console.log(nftMetadata)
             console.log(nftMetadata.image)
