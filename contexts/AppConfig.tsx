@@ -14,8 +14,6 @@ export const AppContextProvider: FC<{ children?: ReactNode | undefined }> = prop
     const [isConnectedToCorrectChain, setIsConnectedToCorrectChain] = useState(false)
 
     const checkChainId = () => {
-        console.log((+Moralis.chainId!) === CHAINID)
-        console.log(+Moralis.chainId!, CHAINID)
         setIsConnectedToCorrectChain(isWeb3Enabled && ((+Moralis.chainId!) !== CHAINID));
     }
 

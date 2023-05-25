@@ -14,7 +14,7 @@ const NetworkBanner = () => {
     }
 
     return (
-        appContext!.isConnectedToCorrectChain && (
+        appContext!.isConnectedToCorrectChain ? (
             <div className="absolute top-0 right-0 p-2">
                 <BannerStrip id="wrongNetworkBanner" type="error" text="Connected to unsupported network"/>
                 <div className="h-4"></div>
@@ -24,7 +24,7 @@ const NetworkBanner = () => {
                     className="bg-red-500 text-white rounded-full py-2 px-4"
                 />
             </div>
-        )
+        ) : <></>
     )
 }
 

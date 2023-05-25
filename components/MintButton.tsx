@@ -1,22 +1,24 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {useMoralis} from "react-moralis";
 import {Button, useNotification} from 'web3uikit';
 import {ContractTransactionReceipt, ethers} from 'ethers';
 import YiqiAbi from '../constants/Yiqi.json';
 import {CHAINID} from '../constants/chainId';
 import networkMapping from "../constants/networkMapping.json";
-import {util} from "zod";
+import {AppContext} from "../contexts/AppConfig";
 
 export const MintButton: React.FC = () => {
-    const dispatch = useNotification();
 
-    //get moralis
-    const { web3, Moralis } = useMoralis();
+    const {isWeb3Enabled} = useMoralis();
+    const appContext = useContext(AppContext);
+
+    const dispatch = useNotification();
 
     const [isMinting, setIsMinting] = React.useState(false);
 
     const requestNFTBackend = async (tokenId: number) => {
-        return fetch(`https://localhost:3000/api/token/${tokenId}`)
+        const response = await fetch(`http://localhost:3000/api/token/${tokenId}`)
+        return response.json()
     }
 
     const callMintFunction = async () => {
@@ -30,10 +32,11 @@ export const MintButton: React.FC = () => {
 
             const contractTxReceipt: ContractTransactionReceipt = await mintTx.wait(1);
             const txReceipt = await provider.getTransactionReceipt(contractTxReceipt.hash);
-            const tokenId = +txReceipt!.logs.slice(-1)[0].topics[3];
-
+            const tokenId = +txReceipt!.logs.slice(-1)[0].topics[2];
             const nftMetadata = await requestNFTBackend(tokenId)
+
             console.log(nftMetadata)
+            console.log(nftMetadata.image)
             // todo retrieve tokenId from txReceipt
             dispatch({
                 type: "success",
@@ -56,7 +59,9 @@ export const MintButton: React.FC = () => {
     return (
         <div className="container mx-auto">
             <div className="p-4">
-                <Button text={"Mint"} onClick={callMintFunction} isLoading={isMinting} className="bg-blue-500 text-white rounded py-2 px-4"/>
+                <Button text={"Mint"} disabled={!isWeb3Enabled || appContext?.isConnectedToCorrectChain}
+                        onClick={callMintFunction} isLoading={isMinting}
+                        className="bg-blue-500 text-white rounded py-2 px-4"/>
             </div>
         </div>
     );
