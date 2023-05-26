@@ -46,6 +46,10 @@ const ListNFTs: NextPage = ({nftAddress, isBackground = false}) => {
         setIsFetchingNfts(false)
     }
 
+    const isEmpty = (obj: any) => {
+        return Object.keys(obj).length === 0;
+    }
+
     async function updateUI() {
         await fetchOwnedNfts()
     }
@@ -54,7 +58,7 @@ const ListNFTs: NextPage = ({nftAddress, isBackground = false}) => {
         if (isWeb3Enabled) {
             updateUI()
         }
-    }, [isWeb3Enabled])
+    }, [isWeb3Enabled, account])
 
 
     return (
@@ -65,15 +69,19 @@ const ListNFTs: NextPage = ({nftAddress, isBackground = false}) => {
                         isFetchingNfts ? (
                             <div>Loading...</div>
                         ) : (
-                            Object.keys(listedNfts).map((tokenId) => {
-                                return (
-                                    <NFTBox
-                                        tokenId={tokenId}
-                                        tokenMetadataPromise={listedNfts[tokenId]}
-                                        key={tokenId}
-                                    />
-                                )
-                            })
+                            isEmpty(listedNfts) ? (
+                                <div>No NFTs Owned</div>
+                            ) : (
+                                Object.keys(listedNfts).map((tokenId) => {
+                                    return (
+                                        <NFTBox
+                                            tokenId={tokenId}
+                                            tokenMetadataPromise={listedNfts[tokenId]}
+                                            key={tokenId}
+                                        />
+                                    )
+                                })
+                            )
                         )
                     ) : (
                         <div>Web3 Currently Not Enabled</div>
