@@ -1,9 +1,23 @@
 import Image from "next/image"
 import {Card} from "web3uikit"
+import {useEffect, useState} from "react";
 
-export default function NFTBox({tokenId, tokenMetadata}) {
+export default function NFTBox({tokenId, tokenMetadataPromise }) {
+
+    const [tokenMetadata, setTokenMetadata] = useState<any>(undefined)
+
+    const handleTokenMetadataPromise = async () => {
+        const fetchedTokenMetadata = await tokenMetadataPromise
+        const jsonTokenMetadata = await fetchedTokenMetadata.json()
+        setTokenMetadata(jsonTokenMetadata)
+    }
+
+    useEffect(() => {
+        handleTokenMetadataPromise()
+    }, [])
 
     return (
+        tokenMetadata ? (
         <div>
             <Card
                 title={`Yiqi #${tokenId}`}
@@ -23,5 +37,8 @@ export default function NFTBox({tokenId, tokenMetadata}) {
             </Card>
             <div className={"p-2"}/>
         </div>
+        ) : (
+            <div>Loading...</div>
+        )
     )
 }

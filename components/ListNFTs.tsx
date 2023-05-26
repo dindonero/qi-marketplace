@@ -36,7 +36,6 @@ const ListNFTs: NextPage = ({nftAddress, isBackground = false}) => {
         } else {
             nftMetadatas = await requestBackgroundMetadataBackend(tokenIds)
         }
-        console.log(nftMetadatas)
         return nftMetadatas
     }
 
@@ -70,7 +69,7 @@ const ListNFTs: NextPage = ({nftAddress, isBackground = false}) => {
                                 return (
                                     <NFTBox
                                         tokenId={tokenId}
-                                        tokenMetadata={listedNfts[tokenId]}
+                                        tokenMetadataPromise={listedNfts[tokenId]}
                                         key={tokenId}
                                     />
                                 )
