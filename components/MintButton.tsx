@@ -29,7 +29,7 @@ export const MintButton: React.FC = () => {
             const contractTxReceipt: ContractTransactionReceipt = await mintTx.wait(1);
             const txReceipt = await provider.getTransactionReceipt(contractTxReceipt.hash);
             const tokenId = +txReceipt!.logs.slice(-1)[0].topics[2];
-            const nftMetadata = await requestNFTMetadataBackend(tokenId)
+            const nftMetadata = await requestNFTMetadataBackend([tokenId])
 
             console.log(nftMetadata)
             console.log(nftMetadata.image)

@@ -7,6 +7,7 @@ import {NotificationProvider} from "web3uikit"
 import Header from "../components/Header"
 import {AppContextProvider} from "../contexts/AppConfig";
 import {MintButton} from "../components/MintButton";
+import Link from "next/link";
 
 function App({Component, pageProps}: AppProps) {
     return (
@@ -20,7 +21,6 @@ function App({Component, pageProps}: AppProps) {
                     <NotificationProvider>
                         <NetworkBanner/>
                         <Header/>
-                        <MintButton/>
                         <Component {...pageProps} />
                     </NotificationProvider>
                 </AppContextProvider>
