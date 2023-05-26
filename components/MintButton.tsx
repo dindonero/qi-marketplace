@@ -23,17 +23,16 @@ export const MintButton: React.FC = () => {
 
             const provider = new ethers.BrowserProvider(window.ethereum)
             const yiqiAddress = networkMapping[CHAINID].Yiqi[networkMapping[CHAINID].Yiqi.length - 1]
-            const yiqiContract = new ethers.Contract(yiqiAddress, YiqiAbi, await provider.getSigner());
+            const yiqiContract = new ethers.Contract(yiqiAddress, JSON.stringify(YiqiAbi), await provider.getSigner());
             const mintTx = await yiqiContract.mint({value: ethers.parseEther("0.1")});
 
             const contractTxReceipt: ContractTransactionReceipt = await mintTx.wait(1);
             const txReceipt = await provider.getTransactionReceipt(contractTxReceipt.hash);
             const tokenId = +txReceipt!.logs.slice(-1)[0].topics[2];
-            const nftMetadata = await requestNFTMetadataBackend([tokenId])
 
-            console.log(nftMetadata)
-            console.log(nftMetadata.image)
-            // todo retrieve tokenId from txReceipt
+            await requestNFTMetadataBackend([tokenId])
+
+            // todo use image retrieved from backend
             dispatch({
                 type: "success",
                 message: "Yiqi minted successfully",
@@ -55,10 +54,12 @@ export const MintButton: React.FC = () => {
     return (
         <div className="container mx-auto">
             <div className="p-4">
+                <div className="bg-blue-500 text-white rounded py-2 px-4">
                 <Button text={"Mint"} disabled={!isWeb3Enabled || appContext?.isConnectedToCorrectChain}
-                        onClick={callMintFunction} isLoading={isMinting}
-                        className="bg-blue-500 text-white rounded py-2 px-4"/>
+                        onClick={callMintFunction} isLoading={isMinting}/>
             </div>
         </div>
-    );
+</div>
+)
+    ;
 };

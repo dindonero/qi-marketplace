@@ -2,7 +2,7 @@ import Image from "next/image"
 import {Card} from "web3uikit"
 import {useEffect, useState} from "react";
 
-export default function NFTBox({tokenId, tokenMetadataPromise }) {
+export default function NFTBox({tokenId, tokenMetadataPromise }: any) {
 
     const [tokenMetadata, setTokenMetadata] = useState<any>(undefined)
 

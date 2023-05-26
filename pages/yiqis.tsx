@@ -5,10 +5,12 @@ import ListNFTs from "../components/ListNFTs";
 
 const Yiqis: NextPage = () => {
 
+    const yiqiAddress: string  = networkMapping[CHAINID].Yiqi[networkMapping[CHAINID].Yiqi.length - 1]
+
     return (
         <div>
             <h1 className="py-4 px-4 font-bold text-2xl">Your Yiqis</h1>
-            <ListNFTs nftAddress={networkMapping[CHAINID].Yiqi[networkMapping[CHAINID].Yiqi.length - 1]}
+            <ListNFTs nftAddress={yiqiAddress}
                       isBackground={false}/>
         </div>
     )

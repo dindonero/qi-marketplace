@@ -18,11 +18,12 @@ const NetworkBanner = () => {
             <div className="absolute top-0 right-0 p-2">
                 <BannerStrip id="wrongNetworkBanner" type="error" text="Connected to unsupported network"/>
                 <div className="h-4"></div>
-                <Button
-                    text={"Change Network"}
-                    onClick={changeNetwork}
-                    className="bg-red-500 text-white rounded-full py-2 px-4"
-                />
+                <div className="bg-red-500 text-white rounded-full py-2 px-4">
+                    <Button
+                        text={"Change Network"}
+                        onClick={changeNetwork}
+                    />
+                </div>
             </div>
         ) : <></>
     )

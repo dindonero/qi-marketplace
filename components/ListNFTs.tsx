@@ -5,11 +5,16 @@ import {requestBackgroundMetadataBackend, requestNFTMetadataBackend} from "@/nft
 import {useEffect, useState} from "react";
 import NFTBox from "../components/NFTBox";
 
-const ListNFTs: NextPage = ({nftAddress, isBackground = false}) => {
+interface ListNFTsProps {
+    nftAddress: string,
+    isBackground: boolean,
+}
+
+const ListNFTs: NextPage<ListNFTsProps> = (props: ListNFTsProps) => {
 
     const {isWeb3Enabled, account} = useMoralis()
 
-    const [listedNfts, setListedNfts] = useState({})
+    const [listedNfts, setListedNfts] = useState<any>({})
     const [isFetchingNfts, setIsFetchingNfts] = useState<boolean>(true)
 
     const getTokenIdsOwnedByUser = async () => {
@@ -19,10 +24,12 @@ const ListNFTs: NextPage = ({nftAddress, isBackground = false}) => {
             network: Network.ETH_GOERLI, // Replace with your network.
         };
 
+        console.log(props.nftAddress)
+
         const alchemy = new Alchemy(settings);
 
         const {ownedNfts} = await alchemy.nft.getNftsForOwner(account!, {
-            contractAddresses: [nftAddress],
+            contractAddresses: [props.nftAddress],
             omitMetadata: true
         })
         return ownedNfts.map((nft: any) => nft.tokenId)
@@ -30,8 +37,8 @@ const ListNFTs: NextPage = ({nftAddress, isBackground = false}) => {
 
     const fetchNFTMetadata = async () => {
         const tokenIds = await getTokenIdsOwnedByUser()
-        let nftMetadatas = {}
-        if (!isBackground) {
+        let nftMetadatas
+        if (!props.isBackground) {
             nftMetadatas = await requestNFTMetadataBackend(tokenIds)
         } else {
             nftMetadatas = await requestBackgroundMetadataBackend(tokenIds)
@@ -62,7 +69,7 @@ const ListNFTs: NextPage = ({nftAddress, isBackground = false}) => {
 
 
     return (
-        <div>
+        <>
             <div className="container mx-auto">
                 <div className="flex flex-wrap">
                     {isWeb3Enabled ? (
@@ -88,7 +95,7 @@ const ListNFTs: NextPage = ({nftAddress, isBackground = false}) => {
                     )}
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 
