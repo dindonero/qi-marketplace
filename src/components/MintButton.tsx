@@ -8,7 +8,7 @@ import networkMapping from "../constants/networkMapping.json";
 import {AppContext} from "../contexts/AppConfig";
 import {requestNFTMetadataBackend} from "@/nftMetadata/fetchMetadata";
 
-export const MintButton: React.FC = () => {
+const MintButton: React.FC = () => {
 
     const {isWeb3Enabled} = useMoralis();
     const appContext = useContext(AppContext);
@@ -23,7 +23,7 @@ export const MintButton: React.FC = () => {
 
             const provider = new ethers.BrowserProvider(window.ethereum)
             const yiqiAddress = networkMapping[CHAINID].Yiqi[networkMapping[CHAINID].Yiqi.length - 1]
-            const yiqiContract = new ethers.Contract(yiqiAddress, YiqiAbi, await provider.getSigner());
+            const yiqiContract = new ethers.Contract(yiqiAddress, JSON.stringify(YiqiAbi), await provider.getSigner());
             const mintTx = await yiqiContract.mint({value: ethers.parseEther("0.1")});
 
             const contractTxReceipt: ContractTransactionReceipt = await mintTx.wait(1);
@@ -56,9 +56,10 @@ export const MintButton: React.FC = () => {
         <div className="container mx-auto">
             <div className="p-4">
                 <Button text={"Mint"} disabled={!isWeb3Enabled || appContext?.isConnectedToCorrectChain}
-                        onClick={callMintFunction} isLoading={isMinting}
-                        className="bg-blue-500 text-white rounded py-2 px-4"/>
+                        onClick={callMintFunction} isLoading={isMinting}/>
             </div>
         </div>
     );
 };
+
+export default MintButton

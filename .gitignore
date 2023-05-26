@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/your_installation_path
 /.pnp
 .pnp.js
 .idea

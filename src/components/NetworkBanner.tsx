@@ -21,7 +21,6 @@ const NetworkBanner = () => {
                 <Button
                     text={"Change Network"}
                     onClick={changeNetwork}
-                    className="bg-red-500 text-white rounded-full py-2 px-4"
                 />
             </div>
         ) : <></>
