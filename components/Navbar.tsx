@@ -1,4 +1,5 @@
 import { ConnectButton } from "web3uikit";
+import { MintButton } from "./MintButton";
 import { useRouter } from 'next/router';
 import { ReactNode } from "react";
 import {
@@ -29,10 +30,10 @@ const Links = [
     name: "HOME",
     path: "/",
   },
-  {
-    name: "MINT A YIQI",
-    path: "/mint",
-  },
+  // {
+  //   name: "MINT A YIQI",
+  //   path: "/mint",
+  // },
   {
     name: "YOUR YIQIS",
     path: "/yiqis",
@@ -64,7 +65,6 @@ export default function Navbar() {
           }}
           className={isActive(path) ? 'font-bold' : ''}
           color={isActive(path) ? 'rgb(46, 125, 175)' : 'gray.100'}
-        //   bg={isActive(path) ? 'blue.500' : 'transparent'}
         >
             <Link href={path}>
                 {children}
@@ -75,7 +75,7 @@ export default function Navbar() {
   return (
     <div className={navStyles.mobileNav}>
       <Box bg={"gray.700"} px={4}>
-        <Flex h={16} alignItems={"center"} justifyContent={"space-between"} pos="sticky"> {/*add margin mx */}
+        <Flex h={16} alignItems={"center"} justifyContent={"space-evenly"} pos="sticky"> {/*add margin mx */}
             <IconButton
                 size={"md"}
                 icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -98,6 +98,7 @@ export default function Navbar() {
                 ))}
             </HStack>
           <Flex alignItems={"center"}>
+            <MintButton/>
             <ConnectButton moralisAuth={false} />
           </Flex>
         </Flex>

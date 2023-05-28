@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import {useMoralis} from "react-moralis";
-import {Button, useNotification} from 'web3uikit';
+import { useNotification} from 'web3uikit';
+import { Button } from "@chakra-ui/react";
 import {ContractTransactionReceipt, ethers} from 'ethers';
 import YiqiAbi from '../constants/Yiqi.json';
 import {CHAINID} from '../constants/chainId';
@@ -54,10 +55,10 @@ export const MintButton: React.FC = () => {
     return (
         <div className="container mx-auto">
             <div className="p-4">
-                <div className="bg-blue-500 text-white rounded py-2 px-4">
-                <Button text={"Mint"} disabled={!isWeb3Enabled || appContext?.isConnectedToCorrectChain}
-                        onClick={callMintFunction} isLoading={isMinting}/>
-            </div>
+                <Button disabled={!isWeb3Enabled || appContext?.isConnectedToCorrectChain}
+                    onClick={callMintFunction} isLoading={isMinting} colorScheme="blue" rounded="md" size="md">
+                        Mint
+                </Button>
         </div>
 </div>
 )
