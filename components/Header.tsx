@@ -1,16 +1,119 @@
-import { ConnectButton } from "web3uikit"
-import Link from "next/link"
+import { ConnectButton } from "web3uikit";
+import { useRouter } from 'next/router';
+import { ReactNode } from "react";
+import {
+  Box,
+  Flex,
+  Avatar,
+  HStack,
+  IconButton,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+  useDisclosure,
+  useColorModeValue,
+  Stack,
+  useBreakpointValue
+} from "@chakra-ui/react";
+import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import Link from "next/link";
+// import { ColorModeSwitcher } from "./ColorModeSwitcher";
+// const Links = ["Dashboard", "Projects", "Team"];
+import navStyles from "./navbar.module.css";
+import { integer } from "aws-sdk/clients/frauddetector";
+const Links = [
+  {
+    name: "HOME",
+    path: "/",
+  },
+  {
+    name: "MINT A YIQI",
+    path: "/mint",
+  },
+  {
+    name: "YOUR YIQIS",
+    path: "/yiqis",
+  },
+  {
+    name: "BACKGROUNDS",
+    path: "/backgrounds",
+  },
+];
 
-export default function Header() {
-    return (
-        <nav className="p-5 border-b-2 flex flex-row justify-between items-center">
-            <Link href="/"><h1 className="py-4 px-4 font-bold text-3xl">Home</h1></Link>
-            <Link href="/mint"><div className="mr-4 p-6">Mint a Yiqi</div></Link>
-            <Link href="/yiqis"><div className="mr-4 p-6">Your Yiqis</div></Link>
-            <Link href="/backgrounds"><div className="mr-4 p-6">Backgrounds</div></Link>
-            <div className="flex flex-row items-end">
-                <ConnectButton moralisAuth={false} />
-            </div>
-        </nav>
-    )
+
+export default function Navbar() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+    const router = useRouter();
+
+    const isActive = (pathname : string) => {
+        return router.pathname === pathname;
+    };
+
+    const NavLink = ({ children, path }: { children: ReactNode; path: string }) => (
+        <Box
+          px={4}
+          py={2}
+          rounded={"md"}
+          _hover={{
+            color: "gray.900",
+            textDecoration: "none",
+            bg: useColorModeValue("gray.200", "gray.700"),
+          }}
+          className={isActive(path) ? 'font-bold' : ''}
+          color={isActive(path) ? 'rgb(46, 125, 175)' : 'gray.100'}
+        //   bg={isActive(path) ? 'blue.500' : 'transparent'}
+        >
+            <Link href={path}>
+                {children}
+            </Link> 
+        </Box>
+    );
+
+  return (
+    <div className={navStyles.mobileNav}>
+      <Box bg={"gray.700"} px={4}>
+        <Flex h={16} alignItems={"center"} justifyContent={"space-between"} pos="sticky"> {/*add margin mx */}
+            <IconButton
+                size={"md"}
+                icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+                aria-label={"Open Menu"}
+                display={{ md: "none" }}
+                onClick={isOpen ? onClose : onOpen}
+            />
+            <Flex alignItems={"center"}>
+                <Box color="rgb(46, 125, 175)">Logo</Box>
+            </Flex>
+            <HStack
+                as={"nav"}
+                spacing={10}
+                display={{ base: "none", md: "flex" }}
+            >
+                {Links.map(({ name, path }) => (
+                    <NavLink key={path} path={path}>
+                        {name}
+                    </NavLink>
+                ))}
+            </HStack>
+          <Flex alignItems={"center"}>
+            <ConnectButton moralisAuth={false} />
+          </Flex>
+        </Flex>
+
+        {isOpen ? (
+          <Box pb={4} display={{ md: "none" }}>
+            <Stack as={"nav"} spacing={4}>
+              {Links.map(({ name, path }) => (
+                <NavLink key={path} path={path}>
+                  {name}
+                </NavLink>
+              ))}
+            </Stack>
+          </Box>
+        ) : null}
+      </Box>
+    </div>
+  );
 }

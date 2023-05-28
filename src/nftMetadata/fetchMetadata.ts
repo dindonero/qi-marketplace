@@ -1,5 +1,5 @@
 export const requestNFTMetadataBackend = async (tokenIds: number[]) => {
-    let metadatas = {}
+    let metadatas: { [key: number]: Promise<Response> } = {};
 
     for (const tokenId of tokenIds)
         metadatas[tokenId] = fetch(`http://localhost:3000/api/token/${tokenId}`)
@@ -8,7 +8,7 @@ export const requestNFTMetadataBackend = async (tokenIds: number[]) => {
 }
 
 export const requestBackgroundMetadataBackend = async (tokenIds: number[]) => {
-    let metadatas = []
+    let metadatas: { [key: number]: Promise<Response> } = {};
 
     for (const tokenId of tokenIds)
         metadatas[tokenId] = fetch(`http://localhost:3000/api/background/${tokenId}`)

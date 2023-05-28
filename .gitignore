@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/your_installation_path
 /.pnp
 .pnp.js
 .idea
@@ -37,3 +38,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+package-lock.json

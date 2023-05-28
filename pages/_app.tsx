@@ -8,20 +8,19 @@ import Header from "../components/Header"
 import {AppContextProvider} from "../contexts/AppConfig";
 import {MintButton} from "../components/MintButton";
 import Link from "next/link";
+import { ChakraProvider } from "@chakra-ui/react";
 
 function App({Component, pageProps}: AppProps) {
     return (
         <>
-            <Head>
-                <title>Yiqi</title>
-                <link rel="shortcut icon" href="/favicon.ico"/>
-            </Head>
             <MoralisProvider initializeOnMount={false}>
                 <AppContextProvider>
                     <NotificationProvider>
                         <NetworkBanner/>
-                        <Header/>
-                        <Component {...pageProps} />
+                        <ChakraProvider>
+                            <Header/>
+                            <Component {...pageProps} />
+                        </ChakraProvider>
                     </NotificationProvider>
                 </AppContextProvider>
             </MoralisProvider>
