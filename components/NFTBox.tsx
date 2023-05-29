@@ -18,7 +18,7 @@ export default function NFTBox({tokenId, tokenMetadataPromise }: any) {
 
     return (
         tokenMetadata ? (
-        <div>
+        <div className="p-4">
             <Card
                 title={`Yiqi #${tokenId}`}
             >
