@@ -3,6 +3,7 @@ import {getYiqiNFT} from "@/api/yiqiNFT/service";
 import {verifyYiqiNFTExists} from "@/api/provider/service";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    res.status(200).json({test: "test"})
     const { id } = req.query;
 
     const tokenId = +id!
