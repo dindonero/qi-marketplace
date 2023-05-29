@@ -1,5 +1,6 @@
 import { ConnectButton } from "web3uikit";
 import { MintButton } from "./MintButton";
+import NetworkBanner from "./NetworkBanner"
 import { useRouter } from 'next/router';
 import { ReactNode } from "react";
 import {
@@ -100,6 +101,7 @@ export default function Navbar() {
           <Flex alignItems={"center"}>
             <MintButton/>
             <ConnectButton moralisAuth={false} />
+            <NetworkBanner/>
           </Flex>
         </Flex>
 

@@ -1,6 +1,7 @@
 import {useMoralis} from "react-moralis"
 import {useContext} from "react"
-import {BannerStrip, Button} from "web3uikit"
+import { Button } from "@chakra-ui/react";
+import {BannerStrip} from "web3uikit"
 import {AppContext} from "../contexts/AppConfig";
 import {CHAINID} from "../constants/chainId";
 
@@ -15,15 +16,22 @@ const NetworkBanner = () => {
 
     return (
         appContext!.isConnectedToCorrectChain ? (
-            <div className="absolute top-0 right-0 p-2">
+            <div >
                 <BannerStrip id="wrongNetworkBanner" type="error" text="Connected to unsupported network"/>
-                <div className="h-4"></div>
-                <div className="bg-red-500 text-white rounded-full py-2 px-4">
+                <div className="container mx-auto p-4">
+                    <Button
+                        onClick={changeNetwork}
+                        colorScheme="red" rounded="md" size="md"
+                    >
+                        Change Network
+                    </Button>
+                </div>
+                {/* <div className="bg-red-500 text-white rounded-full py-2 px-4">
                     <Button
                         text={"Change Network"}
                         onClick={changeNetwork}
                     />
-                </div>
+                </div> */}
             </div>
         ) : <></>
     )
