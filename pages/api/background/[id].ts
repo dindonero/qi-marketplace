@@ -6,11 +6,9 @@ import {verifyBackgroundExists} from "@/api/provider/service";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {id} = req.query;
 
-    const tokenId = +id!
-
     try {
-        await verifyBackgroundExists(tokenId)
-        const jsonResponse = await getYiqiBackground(tokenId)
+        await verifyBackgroundExists(+id!)
+        const jsonResponse = await getYiqiBackground(+id!)
         res.status(200).json(jsonResponse)
     } catch (error: any) {
         console.log(error)
