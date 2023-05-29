@@ -4,12 +4,10 @@ import {verifyYiqiNFTExists} from "@/api/provider/service";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
-
-    const tokenId = +id!
-
+    
     try {
-        await verifyYiqiNFTExists(tokenId)
-        const jsonResponse = await getYiqiNFT(tokenId)
+        await verifyYiqiNFTExists(+id!)
+        const jsonResponse = await getYiqiNFT(+id!)
         res.status(200).json(jsonResponse)
     } catch (error: any) {
         console.log(error)
