@@ -74,7 +74,7 @@ export default function Navbar() {
 
   return (
     <div className={navStyles.mobileNav}>
-      <Box bg={"gray.700"} px={4}>
+      <Box bg={"gray.900"} px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-evenly"} pos="sticky"> {/*add margin mx */}
             <IconButton
                 size={"md"}
