@@ -11,6 +11,8 @@
   "dependencies": {
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.6.1",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
@@ -20,6 +22,7 @@
     "autoprefixer": "10.4.14",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
+    "framer-motion": "^10.12.16",
     "magic-sdk": "^17.3.0",
     "moralis": "^2.22.0",
     "moralis-v1": "^1.13.0",
