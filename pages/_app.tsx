@@ -22,7 +22,7 @@ function App({Component, pageProps}: AppProps) {
                     </NotificationProvider>
                 </AppContextProvider>
             </MoralisProvider>
-        </ div>
+        </div>
     )
 }
 
