@@ -10,7 +10,7 @@ interface ListNFTsProps {
     isBackground: boolean,
 }
 
-const ListNFTs: NextPage<ListNFTsProps> = (props: ListNFTsProps) => {
+const ListNFTs = (props: ListNFTsProps) => {
 
     const {isWeb3Enabled, account} = useMoralis()
 

@@ -1,8 +1,5 @@
-import {NextPage} from "next";
-import {useMoralis} from "react-moralis";
-import Image from "next/image";
 
-const Home: NextPage = () => {
+const Home = () => {
     const backgroundImage = "/images/home9.jpg"; // Path to your image file
 
     return (
