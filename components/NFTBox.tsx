@@ -29,8 +29,8 @@ export default function NFTBox({tokenId, tokenMetadataPromise }: any) {
                             alt={`Yiqi #${tokenId}`}
                             loader={() => tokenMetadata.image}
                             src={tokenMetadata.image}
-                            height="200"
-                            width="200"
+                            height="250"
+                            width="250"
                         />
                     </div>
                 </div>
