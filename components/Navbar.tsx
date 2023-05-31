@@ -99,9 +99,9 @@ export default function Navbar() {
                 ))}
             </HStack>
           <Flex alignItems={"center"}>
-            <MintButton/>
+            <Flex  display={{ base: "none", md: "flex" }} ><MintButton /></Flex>
             <ConnectButton moralisAuth={false} />
-            <NetworkBanner/>
+            <Flex  display={{ base: "none", md: "flex" }} ><NetworkBanner/></Flex>
           </Flex>
         </Flex>
 
@@ -114,6 +114,8 @@ export default function Navbar() {
                 </NavLink>
               ))}
             </Stack>
+            <MintButton/>
+            <NetworkBanner/>
           </Box>
         ) : null}
       </Box>
