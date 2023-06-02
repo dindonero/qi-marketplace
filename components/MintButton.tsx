@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {useMoralis} from "react-moralis";
-import { useNotification} from 'web3uikit';
-import { Button } from "@chakra-ui/react";
+import { useNotification } from 'web3uikit';
+import { Button,Tooltip } from "@chakra-ui/react";
 import {ContractTransactionReceipt, ethers} from 'ethers';
 import YiqiAbi from '../constants/Yiqi.json';
 import {CHAINID} from '../constants/chainId';
@@ -53,12 +53,12 @@ export const MintButton: React.FC = () => {
     };
 
     return (
-        <div className="container mx-auto p-4">
+        <Tooltip className="container mx-auto p-4" label={!isWeb3Enabled || appContext?.isConnectedToCorrectChain ? 'Connect Wallet' : ''}>
             <Button isDisabled={!isWeb3Enabled || appContext?.isConnectedToCorrectChain}
                 onClick={callMintFunction} isLoading={isMinting} colorScheme="blue" rounded="md" size="md">
                     Mint
             </Button>
-        </div>
+        </Tooltip>
     )
     ;
 };
