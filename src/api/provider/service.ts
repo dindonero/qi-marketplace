@@ -2,19 +2,19 @@ import {ethers} from "ethers";
 import networkMapping from "../../../constants/networkMapping.json";
 import YiqiAbi from "../../../constants/Yiqi.json";
 import YiqiBackgroundAbi from "../../../constants/YiqiBackground.json";
-import {CHAINID} from "../../../constants/chainId";
+import {CHAIN_ID} from "../../../constants/configHelper";
 
 export const getYiqiContract = async () => {
-    const provider = await getProvider(CHAINID)
+    const provider = await getProvider(CHAIN_ID)
     const signer = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
-    const yiqiAddress = networkMapping[CHAINID].Yiqi[networkMapping[CHAINID].Yiqi.length - 1]
+    const yiqiAddress = networkMapping[CHAIN_ID].Yiqi[networkMapping[CHAIN_ID].Yiqi.length - 1]
     return new ethers.Contract(yiqiAddress, JSON.stringify(YiqiAbi), signer)
 }
 
 export const getYiqiBackgroundContract = async () => {
     const provider = await getProvider(5)
     const signer = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
-    const yiqiBackgroundAddress = networkMapping[CHAINID].YiqiBackground[networkMapping[CHAINID].YiqiBackground.length - 1]
+    const yiqiBackgroundAddress = networkMapping[CHAIN_ID].YiqiBackground[networkMapping[CHAIN_ID].YiqiBackground.length - 1]
     return new ethers.Contract(yiqiBackgroundAddress, JSON.stringify(YiqiBackgroundAbi), signer)
 }
 

@@ -4,10 +4,11 @@ import { useNotification} from 'web3uikit';
 import { Button } from "@chakra-ui/react";
 import {ContractTransactionReceipt, ethers} from 'ethers';
 import YiqiBackgroundAbi from '../constants/YiqiBackground.json';
-import {CHAINID} from '../constants/chainId';
+import {CHAIN_ID} from '../constants/configHelper';
 import networkMapping from "../constants/networkMapping.json";
 import {AppContext} from "../contexts/AppConfig";
 import {requestBackgroundMetadataBackend, requestNFTMetadataBackend} from "@/nftMetadata/fetchMetadata";
+import {getProvider, getYiqiBackgroundContract} from "@/ethersHelper";
 
 export const MintBackgroundButton: React.FC = () => {
 
@@ -22,13 +23,11 @@ export const MintBackgroundButton: React.FC = () => {
         try {
             setIsMinting(true);
 
-            const provider = new ethers.BrowserProvider(window.ethereum)
-            const yiqiBackgroundAddress = networkMapping[CHAINID].YiqiBackground[networkMapping[CHAINID].YiqiBackground.length - 1]
-            const yiqiBackgroundContract = new ethers.Contract(yiqiBackgroundAddress, JSON.stringify(YiqiBackgroundAbi), await provider.getSigner());
+            const yiqiBackgroundContract = await getYiqiBackgroundContract();
             const mintTx = await yiqiBackgroundContract.mint({value: ethers.parseEther("0.01")});
 
             const contractTxReceipt: ContractTransactionReceipt = await mintTx.wait(1);
-            const txReceipt = await provider.getTransactionReceipt(contractTxReceipt.hash);
+            const txReceipt = await (await getProvider()).getTransactionReceipt(contractTxReceipt.hash);
             const tokenId = +txReceipt!.logs.slice(-1)[0].topics[2];
 
             await requestBackgroundMetadataBackend([tokenId])

@@ -3,7 +3,7 @@ import {useContext} from "react"
 import { Button } from "@chakra-ui/react";
 import {BannerStrip} from "web3uikit"
 import {AppContext} from "../contexts/AppConfig";
-import {CHAINID} from "../constants/chainId";
+import {CHAIN_ID} from "../constants/configHelper";
 
 
 const NetworkBanner = () => {
@@ -11,7 +11,7 @@ const NetworkBanner = () => {
 
     const appContext = useContext(AppContext)
     const changeNetwork = async () => {
-        await Moralis.switchNetwork(CHAINID)
+        await Moralis.switchNetwork(CHAIN_ID)
     }
 
     return (
