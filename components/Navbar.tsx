@@ -1,5 +1,4 @@
 import { ConnectButton } from "web3uikit";
-import { MintButton } from "./MintButton";
 import NetworkBanner from "./NetworkBanner"
 import { useRouter } from 'next/router';
 import { ReactNode } from "react";
@@ -75,7 +74,7 @@ export default function Navbar() {
 
   return (
     <div className={navStyles.mobileNav}>
-      <Box bg={"gray.900"} px={4}>
+      <Box bg={"gray.800"} px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-evenly"} pos="sticky"> {/*add margin mx */}
             <IconButton
                 size={"md"}
@@ -99,9 +98,8 @@ export default function Navbar() {
                 ))}
             </HStack>
           <Flex alignItems={"center"}>
-            <Flex  display={{ base: "none", md: "flex" }} ><MintButton /></Flex>
-            <ConnectButton moralisAuth={false} />
             <Flex  display={{ base: "none", md: "flex" }} ><NetworkBanner/></Flex>
+            <ConnectButton moralisAuth={false} />
           </Flex>
         </Flex>
 
@@ -114,7 +112,6 @@ export default function Navbar() {
                 </NavLink>
               ))}
             </Stack>
-            <MintButton/>
             <NetworkBanner/>
           </Box>
         ) : null}
