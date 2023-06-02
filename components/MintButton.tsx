@@ -24,7 +24,7 @@ export const MintButton: React.FC = () => {
             setIsMinting(true);
 
             const yiqiContract = await getYiqiContract();
-            const mintTx = await yiqiContract.mint({value: ethers.parseEther("0.1")});
+            const mintTx = await yiqiContract.mint({value: await yiqiContract.MINT_PRICE()});
 
             const contractTxReceipt: ContractTransactionReceipt = await mintTx.wait(1);
             const txReceipt = await (await getProvider()).getTransactionReceipt(contractTxReceipt.hash);

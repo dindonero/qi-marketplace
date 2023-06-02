@@ -22,7 +22,7 @@ const Burn = () => {
         >
             <h1 className="font-bold text-5xl">Burn NFTs</h1>
             <Button onClick={onOpen}>Burn</Button>
-            <BurnModal isOpen={isOpen} onClose={onClose} tokenId={0} /> {/* todo tokenId */}
+            <BurnModal isOpen={isOpen} onClose={onClose} tokenId={"0"} /> {/* todo tokenId */}
 
         </div>
     );

@@ -2,7 +2,9 @@ import {ethers} from "ethers";
 import networkMapping from "../constants/networkMapping.json";
 import {CHAIN_ID} from "../constants/configHelper";
 import YiqiAbi from '../constants/Yiqi.json';
+import YiqiTreasuryAbi from '../constants/YiqiTreasury.json';
 import YiqiBackgroundAbi from '../constants/YiqiBackground.json';
+import CurvePoolAbi from '../constants/CurvePool.json';
 
 
 export const getProvider = async () => {
@@ -25,10 +27,10 @@ export const getYiqiBackgroundContract = async () => {
 
 export const getYiqiTreasuryContract = async () => {
     const yiqiTreasuryAddress = networkMapping[CHAIN_ID].YiqiTreasury[networkMapping[CHAIN_ID].YiqiTreasury.length - 1]
-    return new ethers.Contract(yiqiTreasuryAddress, JSON.stringify(YiqiAbi), await getSigner());
+    return new ethers.Contract(yiqiTreasuryAddress, JSON.stringify(YiqiTreasuryAbi), await getSigner());
 }
 
 export const getCurveContract = async () => {
     const curveAddress = networkMapping[CHAIN_ID].CurveEthStEthPool[networkMapping[CHAIN_ID].CurveEthStEthPool.length - 1]
-    return new ethers.Contract(curveAddress, JSON.stringify(YiqiAbi), await getSigner());
+    return new ethers.Contract(curveAddress, JSON.stringify(CurvePoolAbi), await getSigner());
 }
