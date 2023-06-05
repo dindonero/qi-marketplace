@@ -1,10 +1,12 @@
 import Image from "next/image"
 import {Card} from "web3uikit"
 import {useEffect, useState} from "react";
-
+import { useRouter } from "next/router";
+ 
 export default function NFTBox({tokenId, tokenMetadataPromise }: any) {
 
-    const [tokenMetadata, setTokenMetadata] = useState<any>(undefined)
+    const [tokenMetadata, setTokenMetadata] = useState<any>(undefined);
+    const router = useRouter();
 
     const handleTokenMetadataPromise = async () => {
         const fetchedTokenMetadata = await tokenMetadataPromise
@@ -16,11 +18,16 @@ export default function NFTBox({tokenId, tokenMetadataPromise }: any) {
         handleTokenMetadataPromise()
     }, [])
 
+    const navigateToYiQiDisplay = (tokenId : any) => {
+        router.push(`/NFTDisplay?tokenId=${tokenId}`);
+      };
+
     return (
         tokenMetadata ? (
         <div className="p-4">
             <Card
                 title={`Yiqi #${tokenId}`}
+                onClick={() => navigateToYiQiDisplay(tokenId)}
             >
                 <div className="p-2">
                     <div className="flex flex-col items-end gap-2">
