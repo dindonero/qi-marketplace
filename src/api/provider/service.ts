@@ -12,7 +12,7 @@ export const getYiqiContract = async () => {
 }
 
 export const getYiqiBackgroundContract = async () => {
-    const provider = await getProvider(5)
+    const provider = await getProvider(CHAIN_ID)
     const signer = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
     const yiqiBackgroundAddress = networkMapping[CHAIN_ID].YiqiBackground[networkMapping[CHAIN_ID].YiqiBackground.length - 1]
     return new ethers.Contract(yiqiBackgroundAddress, JSON.stringify(YiqiBackgroundAbi), signer)
@@ -29,6 +29,8 @@ const getProvider = async (chainId: number) => {
             return new ethers.JsonRpcProvider(process.env.INFURA_MAINNET_RPC_URL!)
         case 5:
             return new ethers.JsonRpcProvider(process.env.INFURA_GOERLI_RPC_URL!)
+        case 31337:
+            return new ethers.JsonRpcProvider("http://localhost:8545")
     }
 }
 

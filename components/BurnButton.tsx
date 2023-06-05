@@ -4,7 +4,7 @@ import {useNotification} from 'web3uikit';
 import {Button} from "@chakra-ui/react";
 import {ethers} from 'ethers';
 import {AppContext} from "../contexts/AppConfig";
-import {getYiqiContract} from "@/ethersHelper";
+import {getProvider, getYiqiContract} from "@/ethersHelper";
 
 interface BurnButtonProps {
     tokenId: string;
@@ -25,10 +25,14 @@ export const BurnButton = (props: BurnButtonProps) => {
             setIsBurning(true);
 
             const yiqiContract = await getYiqiContract();
+
             const burnTx = await yiqiContract.burn(props.tokenId, props.minAmountOut);
 
             const burnReceipt = await burnTx.wait(1);
-            const decodedLog = yiqiContract.interface.parseLog(burnReceipt!.logs.slice(-1)[0])
+            const txReceipt = await (await getProvider()).getTransactionReceipt(burnReceipt.hash);
+
+            const eventLog = txReceipt!.logs.slice(-1)[0]
+            const decodedLog = yiqiContract.interface.parseLog({topics: eventLog.topics.map((topic) => topic.toString()), data: eventLog.data })
             const ethReceived = decodedLog!.args.ethAmountReturned;
             const ethAmountReturnedInEther = ethers.formatEther(ethReceived);
 
@@ -52,7 +56,7 @@ export const BurnButton = (props: BurnButtonProps) => {
 
     return (
         <div className="container mx-auto p-4">
-            <Button isDisabled={!isWeb3Enabled || appContext?.isConnectedToCorrectChain || !props.minAmountOut || BigInt(props.minAmountOut.toString()) < BigInt(0)}
+            <Button isDisabled={!isWeb3Enabled || !appContext?.isConnectedToCorrectChain || !props.minAmountOut || BigInt(props.minAmountOut.toString()) < BigInt(0)}
                     onClick={callBurnFunction} isLoading={isBurning} colorScheme="red" rounded="md" size="md">
                 Burn
             </Button>

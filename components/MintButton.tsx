@@ -53,7 +53,7 @@ export const MintButton: React.FC = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <Button isDisabled={!isWeb3Enabled || appContext?.isConnectedToCorrectChain}
+            <Button isDisabled={!isWeb3Enabled || !appContext?.isConnectedToCorrectChain}
                 onClick={callMintFunction} isLoading={isMinting} colorScheme="blue" rounded="md" size="md">
                     Mint
             </Button>

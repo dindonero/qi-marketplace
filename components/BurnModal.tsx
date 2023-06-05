@@ -1,8 +1,7 @@
 import {useContext, useEffect, useState} from "react";
 import {useMoralis} from "react-moralis";
 import {AppContext} from "../contexts/AppConfig";
-import {getCurveContract, getYiqiContract, getYiqiTreasuryContract} from "@/ethersHelper";
-import {useNotification} from "web3uikit";
+import {getCurveContract, getYiqiTreasuryContract} from "@/ethersHelper";
 import {
     Button,
     Modal,
@@ -12,22 +11,19 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    NumberDecrementStepper,
-    NumberIncrementStepper,
     NumberInput,
     NumberInputField,
-    NumberInputStepper,
 } from '@chakra-ui/react'
-import {ethers} from "ethers";
-import {DEFAULT_SLIPPAGE} from "../constants/configHelper";
+import {DEFAULT_SLIPPAGE, MAX_SLIPPAGE, MIN_SLIPPAGE} from "../constants/configHelper";
 import BurnButton from "./BurnButton";
-import {round} from "@popperjs/core/lib/utils/math";
+import {ethers} from "ethers";
 
 interface BurnModalProps {
     isOpen: boolean;
     onClose: () => void;
     tokenId: string;
 }
+
 const BurnModal = (props: BurnModalProps) => {
 
     const appContext = useContext(AppContext);
@@ -39,8 +35,9 @@ const BurnModal = (props: BurnModalProps) => {
 
 
     useEffect(() => {
-        if (!isWeb3Enabled || appContext?.isConnectedToCorrectChain)
+        if (!isWeb3Enabled || !appContext || !appContext!.isConnectedToCorrectChain)
             return
+        console.log(!appContext?.isConnectedToCorrectChain)
         // Hack due to lack of Curve contract on goerli
         if (chainId === "5")
             setMinAmountOut(BigInt(0))
@@ -62,8 +59,16 @@ const BurnModal = (props: BurnModalProps) => {
             expectedAmountOut = stEthReceived;
         }
 
-        const minAmountOut = expectedAmountOut * BigInt(round(100000 - slippage * 1000)) / BigInt(100000);
+        const minAmountOut = expectedAmountOut * BigInt(Math.round(100000 - slippage * 1000)) / BigInt(100000);
         setMinAmountOut(minAmountOut);
+    }
+
+    const handleSlippage = (value: number) => {
+        if (value < MIN_SLIPPAGE)
+            value = MIN_SLIPPAGE
+        else if (value > MAX_SLIPPAGE)
+            value = MAX_SLIPPAGE
+        setSlippage(value)
     }
 
     return (
@@ -75,10 +80,10 @@ const BurnModal = (props: BurnModalProps) => {
                     <ModalCloseButton />
                     <ModalBody>
                         <div>Slippage tolerance</div>
-                        <NumberInput defaultValue={DEFAULT_SLIPPAGE} min={0} max={50} precision={1} step={0.1} size='md' maxW={24} clampValueOnBlur={false}>
-                            <NumberInputField value={slippage} onChange={(ev: React.ChangeEvent<HTMLInputElement>) => setSlippage(+ev.target.value)} />
+                        <NumberInput defaultValue={DEFAULT_SLIPPAGE} min={MIN_SLIPPAGE} max={MAX_SLIPPAGE} precision={1} step={0.1} size='md' maxW={24}>
+                            <NumberInputField value={slippage} onChange={(ev: React.ChangeEvent<HTMLInputElement>) => handleSlippage(+ev.target.value)} />
                         </NumberInput>
-                        <div>Min amount out: {minAmountOut ? minAmountOut.toString() : "Loading..."}</div>
+                        <div>Min amount out: {minAmountOut ?  ethers.formatEther(minAmountOut.toString()) : "Loading..."}</div>
                     </ModalBody>
                     <ModalFooter>
                         <BurnButton tokenId={props.tokenId} minAmountOut={minAmountOut} />
