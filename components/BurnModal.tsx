@@ -83,7 +83,7 @@ const BurnModal = (props: BurnModalProps) => {
                         <NumberInput defaultValue={DEFAULT_SLIPPAGE} min={MIN_SLIPPAGE} max={MAX_SLIPPAGE} precision={1} step={0.1} size='md' maxW={24}>
                             <NumberInputField value={slippage} onChange={(ev: React.ChangeEvent<HTMLInputElement>) => handleSlippage(+ev.target.value)} />
                         </NumberInput>
-                        <div>Min amount out: {minAmountOut ?  ethers.formatEther(minAmountOut.toString()) : "Loading..."}</div>
+                        <div>Min amount out: {minAmountOut ?  ethers.formatEther(minAmountOut.toString()).substring(0, 9) + " ETH" : "Loading..."}</div>
                     </ModalBody>
                     <ModalFooter>
                         <BurnButton tokenId={props.tokenId} minAmountOut={minAmountOut} />
