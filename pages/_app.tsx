@@ -17,7 +17,7 @@ function App({Component, pageProps}: AppProps) {
                     <NotificationProvider>
                         <ChakraProvider >
                             <Navbar/>
-                            <Component {...pageProps} style={{backgroundColor: "black"}}/>
+                            <Component {...pageProps}/>
                         </ChakraProvider>
                     </NotificationProvider>
                 </AppContextProvider>

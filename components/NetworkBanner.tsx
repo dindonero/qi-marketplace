@@ -1,18 +1,32 @@
 import {useMoralis} from "react-moralis"
-import {useContext} from "react"
+import {useContext, useEffect} from "react"
 import { Button } from "@chakra-ui/react";
-import {BannerStrip} from "web3uikit"
+import {useNotification} from "web3uikit"
 import {AppContext} from "../contexts/AppConfig";
-import {CHAIN_ID} from "../constants/configHelper";
+import {CHAINID} from "../constants/chainId";
+import { MintButton } from "./MintButton";
 
 
 const NetworkBanner = () => {
     const {Moralis} = useMoralis()
+    const dispatch = useNotification();
 
     const appContext = useContext(AppContext)
     const changeNetwork = async () => {
         await Moralis.switchNetwork(CHAIN_ID)
     }
+
+    useEffect(() => {
+        console.log(!appContext?.isConnectedToCorrectChain)
+        if (appContext?.isConnectedToCorrectChain) {
+            dispatch({
+                type: "error",
+                message: "Change network",
+                title: "Wrong Network Selected",
+                position: "topR"
+            })
+        }
+      }, [appContext?.isConnectedToCorrectChain]);
 
     return (
         !appContext!.isConnectedToCorrectChain ? (
@@ -33,7 +47,7 @@ const NetworkBanner = () => {
                     />
                 </div> */}
             </div>
-        ) : <></>
+        ) : <MintButton />
     )
 }
 
