@@ -1,12 +1,12 @@
 import {NextPage} from "next";
 import ListNFTs from "../components/ListNFTs";
 import networkMapping from "../constants/networkMapping.json";
-import {CHAINID} from "../constants/chainId";
+import {CHAIN_ID} from "../constants/configHelper";
 import {MintBackgroundButton} from "../components/MintBackgroundButton";
 
 const Backgrounds: NextPage = () => {
 
-    const yiqiBackgroundAddress: string = networkMapping[CHAINID].YiqiBackground[networkMapping[CHAINID].YiqiBackground.length - 1]
+    const yiqiBackgroundAddress: string = networkMapping[CHAIN_ID].YiqiBackground[networkMapping[CHAIN_ID].YiqiBackground.length - 1]
 
     return (
         <div style={{
