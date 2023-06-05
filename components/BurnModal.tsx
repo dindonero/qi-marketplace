@@ -21,6 +21,7 @@ import {
 import {ethers} from "ethers";
 import {DEFAULT_SLIPPAGE} from "../constants/configHelper";
 import BurnButton from "./BurnButton";
+import {round} from "@popperjs/core/lib/utils/math";
 
 interface BurnModalProps {
     isOpen: boolean;
@@ -33,7 +34,7 @@ const BurnModal = (props: BurnModalProps) => {
 
     const {isWeb3Enabled, chainId} = useMoralis();
 
-    const [minAmountOut, setMinAmountOut] = useState<ethers.BigNumberish | undefined>();
+    const [minAmountOut, setMinAmountOut] = useState<BigInt | undefined>();
     const [slippage, setSlippage] = useState<number>(DEFAULT_SLIPPAGE);
 
 
@@ -42,7 +43,7 @@ const BurnModal = (props: BurnModalProps) => {
             return
         // Hack due to lack of Curve contract on goerli
         if (chainId === "5")
-            setMinAmountOut(0)
+            setMinAmountOut(BigInt(0))
         else
             getExpectedAmountOut()
 
@@ -50,11 +51,10 @@ const BurnModal = (props: BurnModalProps) => {
 
     const getExpectedAmountOut = async () => {
         const treasuryContract = await getYiqiTreasuryContract();
-        const stEthReceived: ethers.BigNumberish = await treasuryContract.calculateReclaimableStETHFromBurn();
+        const stEthReceived = await treasuryContract.calculateReclaimableStETHFromBurn();
 
+        let expectedAmountOut;
         // Hack due to lack of Curve contract on goerli
-        let expectedAmountOut: ethers.BigNumberish;
-        console.log(chainId)
         if (+chainId! !== 5) {
             const curveContract = await getCurveContract();
             expectedAmountOut = await curveContract.get_dy(1, 0, stEthReceived);
@@ -62,7 +62,7 @@ const BurnModal = (props: BurnModalProps) => {
             expectedAmountOut = stEthReceived;
         }
 
-        const minAmountOut = BigInt(expectedAmountOut) * BigInt((1 - slippage) * 100) / BigInt(10000)
+        const minAmountOut = expectedAmountOut * BigInt(round(100000 - slippage * 1000)) / BigInt(100000);
         setMinAmountOut(minAmountOut);
     }
 
@@ -74,12 +74,9 @@ const BurnModal = (props: BurnModalProps) => {
                     <ModalHeader>Burn Yiqi</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <NumberInput defaultValue={DEFAULT_SLIPPAGE} min={0} max={50} precision={1} step={0.1} size='md' maxW={24}>
+                        <div>Slippage tolerance</div>
+                        <NumberInput defaultValue={DEFAULT_SLIPPAGE} min={0} max={50} precision={1} step={0.1} size='md' maxW={24} clampValueOnBlur={false}>
                             <NumberInputField value={slippage} onChange={(ev: React.ChangeEvent<HTMLInputElement>) => setSlippage(+ev.target.value)} />
-                            <NumberInputStepper>
-                                <NumberIncrementStepper />
-                                <NumberDecrementStepper />
-                            </NumberInputStepper>
                         </NumberInput>
                         <div>Min amount out: {minAmountOut ? minAmountOut.toString() : "Loading..."}</div>
                     </ModalBody>
