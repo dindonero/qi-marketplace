@@ -1,10 +1,10 @@
 import {useMoralis} from "react-moralis"
 import {useContext, useEffect} from "react"
 import { Button } from "@chakra-ui/react";
-import {useNotification} from "web3uikit"
+import {BannerStrip, useNotification} from "web3uikit"
 import {AppContext} from "../contexts/AppConfig";
-import {CHAINID} from "../constants/chainId";
 import { MintButton } from "./MintButton";
+import {CHAIN_ID} from "../constants/configHelper";
 
 
 const NetworkBanner = () => {
