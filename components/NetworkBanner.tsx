@@ -17,8 +17,7 @@ const NetworkBanner = () => {
     }
 
     useEffect(() => {
-        console.log(!appContext?.isConnectedToCorrectChain)
-        if (appContext?.isConnectedToCorrectChain) {
+        if (appContext?.isConnectedToCorrectChain !== undefined && !appContext?.isConnectedToCorrectChain) {
             dispatch({
                 type: "error",
                 message: "Change network",
@@ -29,7 +28,7 @@ const NetworkBanner = () => {
       }, [appContext?.isConnectedToCorrectChain]);
 
     return (
-        !appContext!.isConnectedToCorrectChain ? (
+        appContext?.isConnectedToCorrectChain !== undefined && !appContext!.isConnectedToCorrectChain ? (
             <div >
                 <BannerStrip id="wrongNetworkBanner" type="error" text="Connected to unsupported network"/>
                 <div className="container mx-auto p-4">
