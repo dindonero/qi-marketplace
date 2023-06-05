@@ -30,7 +30,6 @@ const NetworkBanner = () => {
     return (
         appContext?.isConnectedToCorrectChain !== undefined && !appContext!.isConnectedToCorrectChain ? (
             <div >
-                <BannerStrip id="wrongNetworkBanner" type="error" text="Connected to unsupported network"/>
                 <div className="container mx-auto p-4">
                     <Button
                         onClick={changeNetwork}
