@@ -56,7 +56,7 @@ export default function Navbar() {
     const router = useRouter();
 
     const isActive = (pathname: string) => {
-        return router.pathname === pathname;
+        return router.pathname === pathname || pathname === "/yiqis" &&  router.pathname.includes("NFTDisplay");
     };
 
     const NavLink = ({children, path}: { children: ReactNode; path: string }) => (
@@ -90,6 +90,7 @@ export default function Navbar() {
                         onClick={isOpen ? onClose : onOpen}
                     />
                     <Flex alignItems={"center"}>
+                        {/* <img src="./images/logo2.png" alt="logo" width="10%"/> */}
                         <Box color="rgb(46, 125, 175)">Logo</Box>
                     </Flex>
                     <HStack
@@ -104,9 +105,8 @@ export default function Navbar() {
                         ))}
                     </HStack>
                     <Flex alignItems={"center"}>
-                        <Flex display={{base: "none", md: "flex"}}><MintButton/></Flex>
-                        <ConnectButton moralisAuth={false}/>
                         <Flex display={{base: "none", md: "flex"}}><NetworkBanner/></Flex>
+                        <ConnectButton moralisAuth={false}/>
                     </Flex>
                 </Flex>
 
@@ -119,8 +119,8 @@ export default function Navbar() {
                                 </NavLink>
                             ))}
                         </Stack>
-                        <MintButton/>
-                        <NetworkBanner/>
+                        {/* <MintButton/> */}
+                        <Flex px={4} py={4}><NetworkBanner/></Flex>
                     </Box>
                 ) : null}
             </Box>
