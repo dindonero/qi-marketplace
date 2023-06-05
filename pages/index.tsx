@@ -1,12 +1,12 @@
 
 const Home = () => {
-    const backgroundImage = "/images/home9.jpg"; // Path to your image file
+    const backgroundImage = "/images/home9.jpg";
 
     return (
         <div style={{
             backgroundImage: `url(${backgroundImage})`,
             backgroundSize: "cover",
-            backgroundPosition: "top",
+            backgroundPosition: "left",
             backgroundRepeat: "no-repeat",
             width: "100%",
             height: "100vh",

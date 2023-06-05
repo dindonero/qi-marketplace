@@ -1,21 +1,34 @@
 import {useMoralis} from "react-moralis"
-import {useContext} from "react"
+import {useContext, useEffect} from "react"
 import { Button } from "@chakra-ui/react";
-import {BannerStrip} from "web3uikit"
+import {BannerStrip, useNotification} from "web3uikit"
 import {AppContext} from "../contexts/AppConfig";
-import {CHAINID} from "../constants/chainId";
+import { MintButton } from "./MintButton";
+import {CHAIN_ID} from "../constants/configHelper";
 
 
 const NetworkBanner = () => {
     const {Moralis} = useMoralis()
+    const dispatch = useNotification();
 
     const appContext = useContext(AppContext)
     const changeNetwork = async () => {
-        await Moralis.switchNetwork(CHAINID)
+        await Moralis.switchNetwork(CHAIN_ID)
     }
 
+    useEffect(() => {
+        if (appContext?.isConnectedToCorrectChain !== undefined && !appContext?.isConnectedToCorrectChain) {
+            dispatch({
+                type: "error",
+                message: "Change network",
+                title: "Wrong Network Selected",
+                position: "topR"
+            })
+        }
+      }, [appContext?.isConnectedToCorrectChain]);
+
     return (
-        appContext!.isConnectedToCorrectChain ? (
+        appContext?.isConnectedToCorrectChain !== undefined && !appContext!.isConnectedToCorrectChain ? (
             <div >
                 <BannerStrip id="wrongNetworkBanner" type="error" text="Connected to unsupported network"/>
                 <div className="container mx-auto p-4">
@@ -33,7 +46,7 @@ const NetworkBanner = () => {
                     />
                 </div> */}
             </div>
-        ) : <></>
+        ) : <MintButton />
     )
 }
 
