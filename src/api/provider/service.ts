@@ -58,9 +58,8 @@ const verifyTokenExists = async (contract: ethers.Contract, tokenId: number) => 
 
 export const verifySignature = async (message: string, signature: string, address: string) => {
     const recoveredAddress = ethers.verifyMessage(message, signature);
-    if (recoveredAddress !== address) {
+    if (recoveredAddress !== address)
         throw new Error("Signature does not match the provided Ethereum address")
-    }
 }
 
 export const verifyYiqiOwnership = async (tokenId: number, address: string) => {

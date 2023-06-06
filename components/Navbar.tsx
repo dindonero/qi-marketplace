@@ -47,6 +47,10 @@ const Links = [
     {
         name: "BURN",
         path: "/burn",
+    },
+    {
+        name: "CHANGE BACKGROUND",
+        path: "/changeBackground",
     }
 ];
 

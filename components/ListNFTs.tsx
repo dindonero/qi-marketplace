@@ -24,8 +24,6 @@ const ListNFTs = (props: ListNFTsProps) => {
             network: Network.ETH_GOERLI, // Replace with your network.
         };
 
-        console.log(props.nftAddress)
-
         const alchemy = new Alchemy(settings);
 
         const {ownedNfts} = await alchemy.nft.getNftsForOwner(account!, {
