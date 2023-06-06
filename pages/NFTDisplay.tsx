@@ -2,27 +2,21 @@ import Image from "next/image"
 import {Card} from "web3uikit"
 import {useEffect, useState} from "react";
 import { useRouter } from "next/router";
+import BurnModal from "../components/BurnModal";
+import ChangeBackgroundButton from "../components/ChangeBackgroundButton";
+import {Button, useDisclosure} from "@chakra-ui/react";
 
 export default function NFTDisplay() {
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const router = useRouter();
     const tokenId = router.query.tokenId;
-    const tokenMetadataImage = router.query.tokenMetadataImage;
+    const image = router.query.image;
     const backgroundImage = "https://yiqi-nft.s3.amazonaws.com/" + tokenId + ".png";
-
-    // const handleTokenMetadataPromise = async () => {
-    //     const fetchedTokenMetadata = await tokenMetadataPromise
-    //     const jsonTokenMetadata = await fetchedTokenMetadata.json()
-    //     setTokenMetadata(jsonTokenMetadata)
-    // }
-
-    // useEffect(() => {
-    //     handleTokenMetadataPromise()
-    // }, [])
 
     return (
         <div style={{
-            backgroundImage: `url(${backgroundImage})`,
+            backgroundImage: `url(${image})`,
             backgroundSize: "contain",
             backgroundPosition: "top",
             backgroundRepeat: "no-repeat",
@@ -33,20 +27,11 @@ export default function NFTDisplay() {
             alignItems: "center",
             color: "white",
           }}
-        >
-            {/* <h1 className="font-bold text-5xl">#{tokenId}</h1> */}
+        >   
+            <Button onClick={onOpen}>Burn</Button>
+            <BurnModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)} />
+            <ChangeBackgroundButton tokenId={String(tokenId)} backgroundTokenId={"0"} />
+            <h1 className="font-bold text-5xl">#{tokenId}</h1>
         </div>
-        // <div className="p-4">
-        //         <div className="p-2">
-        //                 <h1>#{tokenId}</h1>
-        //                 <Image
-        //                     alt={`Yiqi #${tokenId}`}
-        //                     loader={() => "https://yiqi-nft.s3.amazonaws.com/" + tokenId + ".png"}
-        //                     src={"https://yiqi-nft.s3.amazonaws.com/" + tokenId + ".png"}
-        //                     height="800"
-        //                     width="800"
-        //                 />
-        //         </div>
-        // </div>
     )
 }
