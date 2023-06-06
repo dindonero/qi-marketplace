@@ -3,19 +3,18 @@ import {
     getImageFromS3Bucket,
     getImageMetadata,
     getRandomImageFromS3Bucket,
-    imageExists,
     uploadImage
 } from "@/api/aws/s3.service";
 import {QI_BACKGROUND_BUCKET, QI_NFT_BUCKET, QI_TRANSPARENT_BUCKET} from "@/api/aws/aws-helper-config";
 import {S3Image} from "@/api/aws/S3Image.type";
-import {getAllYiqiBaseFiles, getYiqiNFTByTokenId, storeYiqiNFT} from "@/api/yiqiNFT/db.service";
+import {getAllYiqiBaseFiles, getYiqiNFTByTokenId, storeYiqiNFT, yiqiNFTExists} from "@/api/yiqiNFT/db.service";
 import {backgroundExists, getBackgroundByTokenId, storeBackground} from "@/api/yiqiBackground/db.service";
 import {getBackgroundTokenIdFromYiqiNFT} from "@/api/provider/service";
 
 export const getYiqiNFT = async (id: number): Promise<any> => {
 
     // if image is not uploaded on s3, generate nft image and upload it
-    if (!(await imageExists(QI_NFT_BUCKET, `${id}.png`)))
+    if (!(await yiqiNFTExists(id)))
         await mintYiqiNFT(id)
 
     // return nft json data
