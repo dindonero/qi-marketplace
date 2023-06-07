@@ -3,15 +3,28 @@ import {useMoralis} from "react-moralis";
 import {Alchemy, Network} from "alchemy-sdk";
 import {requestBackgroundMetadataBackend, requestNFTMetadataBackend} from "@/nftMetadata/fetchMetadata";
 import {useEffect, useState} from "react";
-import NFTBox from "../components/NFTBox";
+import networkMapping from "../constants/networkMapping.json";
+import {CHAIN_ID} from "../constants/configHelper";
+import {
+    Button,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+} from '@chakra-ui/react'
+import ChangeBackgroundButton from "./ChangeBackgroundButton";
 
-interface ListNFTsProps {
-    nftAddress: string,
-    isBackground: boolean,
+interface ChangeBackgroundModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    tokenId: string;
 }
 
-const ListNFTs = (props: ListNFTsProps) => {
-
+const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
+    const yiqiAddress: string  = networkMapping[CHAIN_ID].Yiqi[networkMapping[CHAIN_ID].Yiqi.length - 1]
     const {isWeb3Enabled, account} = useMoralis()
 
     const [listedNfts, setListedNfts] = useState<any>({})
@@ -27,7 +40,7 @@ const ListNFTs = (props: ListNFTsProps) => {
         const alchemy = new Alchemy(settings);
 
         const {ownedNfts} = await alchemy.nft.getNftsForOwner(account!, {
-            contractAddresses: [props.nftAddress],
+            contractAddresses: [yiqiAddress],
             omitMetadata: true
         })
         return ownedNfts.map((nft: any) => nft.tokenId)
@@ -35,13 +48,7 @@ const ListNFTs = (props: ListNFTsProps) => {
 
     const fetchNFTMetadata = async () => {
         const tokenIds = await getTokenIdsOwnedByUser()
-        let nftMetadatas
-        if (!props.isBackground) {
-            nftMetadatas = await requestNFTMetadataBackend(tokenIds)
-        } else {
-            nftMetadatas = await requestBackgroundMetadataBackend(tokenIds)
-        }
-        return nftMetadatas
+        return await requestBackgroundMetadataBackend(tokenIds);
     }
 
     const fetchOwnedNfts = async () => {
@@ -65,13 +72,20 @@ const ListNFTs = (props: ListNFTsProps) => {
         }
     }, [isWeb3Enabled, account])
 
-
     return (
         <>
-            <div className="container mx-auto">
-                <div className="flex flex-wrap">
-                    {isWeb3Enabled ? (
-                        isFetchingNfts ? (
+            <Modal isOpen={props.isOpen} onClose={props.onClose} size="full">
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Select a background</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                    {/* <div className="bulkImageArea">
+                        {bulkImages.map((img) => (
+                            <img key={img} src={img} alt={img} className="bulkImage" />
+                        ))}
+                    </div> */}
+                    {isFetchingNfts ? (
                             <div>Loading...</div>
                         ) : (
                             isEmpty(listedNfts) ? (
@@ -79,23 +93,24 @@ const ListNFTs = (props: ListNFTsProps) => {
                             ) : (
                                 Object.keys(listedNfts).map((tokenId) => {
                                     return (
-                                        <NFTBox
-                                            tokenId={tokenId}
-                                            tokenMetadataPromise={listedNfts[tokenId]}
-                                            key={tokenId}
-                                            isBackground={props.isBackground}
-                                        />
+                                        <img key={tokenId} src={listedNfts[tokenId].image} alt={listedNfts[tokenId].image} className="bulkImage" />
                                     )
                                 })
                             )
                         )
-                    ) : (
-                        <div>Web3 Currently Not Enabled</div>
-                    )}
-                </div>
-            </div>
+                    }
+                    </ModalBody>
+                    <ModalFooter>
+                        <ChangeBackgroundButton tokenId={String(props.tokenId)} backgroundTokenId={"0"} />
+                        <Button colorScheme='blue' mr={3} onClick={props.onClose}>
+                            Close
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </>
     )
+
 }
 
-export default ListNFTs
+export default ChangeBackgroundModal;
