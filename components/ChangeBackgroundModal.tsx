@@ -16,6 +16,8 @@ import {
     ModalOverlay,
 } from '@chakra-ui/react'
 import ChangeBackgroundButton from "./ChangeBackgroundButton";
+import Image from "next/image";
+import {getTokenIdsOwnedByUser} from "@/nftMetadata/alchemyConnector";
 
 interface ChangeBackgroundModalProps {
     isOpen: boolean;
@@ -24,37 +26,25 @@ interface ChangeBackgroundModalProps {
 }
 
 const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
-    const yiqiAddress: string  = networkMapping[CHAIN_ID].Yiqi[networkMapping[CHAIN_ID].Yiqi.length - 1]
+
     const {isWeb3Enabled, account} = useMoralis()
 
     const [listedNfts, setListedNfts] = useState<any>({})
     const [isFetchingNfts, setIsFetchingNfts] = useState<boolean>(true)
 
-    const getTokenIdsOwnedByUser = async () => {
-
-        const settings = {
-            apiKey: process.env.ALCHEMY_API_KEY, // Replace with your Alchemy API Key.
-            network: Network.ETH_GOERLI, // Replace with your network.
-        };
-
-        const alchemy = new Alchemy(settings);
-
-        const {ownedNfts} = await alchemy.nft.getNftsForOwner(account!, {
-            contractAddresses: [yiqiAddress],
-            omitMetadata: true
-        })
-        return ownedNfts.map((nft: any) => nft.tokenId)
-    }
-
     const fetchNFTMetadata = async () => {
-        const tokenIds = await getTokenIdsOwnedByUser()
-        return await requestBackgroundMetadataBackend(tokenIds);
+        const yiqiBackgroundAddress: string = networkMapping[CHAIN_ID].YiqiBackground[networkMapping[CHAIN_ID].YiqiBackground.length - 1]
+        const tokenIds = await getTokenIdsOwnedByUser(account!, yiqiBackgroundAddress)
+        return requestBackgroundMetadataBackend(tokenIds);
     }
 
     const fetchOwnedNfts = async () => {
         setIsFetchingNfts(true)
         const ownedNfts = await fetchNFTMetadata()
-        setListedNfts(ownedNfts)
+        setListedNfts(await Promise.all(Object.keys(ownedNfts).map(async (key) => {
+            const nftResponse = await ownedNfts[+key]
+            return await nftResponse.json()
+        })))
         setIsFetchingNfts(false)
     }
 
@@ -75,17 +65,17 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
     return (
         <>
             <Modal isOpen={props.isOpen} onClose={props.onClose} size="full">
-                <ModalOverlay />
+                <ModalOverlay/>
                 <ModalContent>
                     <ModalHeader>Select a background</ModalHeader>
-                    <ModalCloseButton />
+                    <ModalCloseButton/>
                     <ModalBody>
-                    {/* <div className="bulkImageArea">
+                        {/* <div className="bulkImageArea">
                         {bulkImages.map((img) => (
                             <img key={img} src={img} alt={img} className="bulkImage" />
                         ))}
                     </div> */}
-                    {isFetchingNfts ? (
+                        {isFetchingNfts ? (
                             <div>Loading...</div>
                         ) : (
                             isEmpty(listedNfts) ? (
@@ -93,15 +83,18 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
                             ) : (
                                 Object.keys(listedNfts).map((tokenId) => {
                                     return (
-                                        <img key={tokenId} src={listedNfts[tokenId].image} alt={listedNfts[tokenId].image} className="bulkImage" />
+                                        <Image height="250"
+                                               width="250" key={tokenId} loader={() => listedNfts[+tokenId].image}
+                                               src={listedNfts[+tokenId].image} alt={listedNfts[tokenId].image}
+                                               className="bulkImage"/>
                                     )
                                 })
                             )
                         )
-                    }
+                        }
                     </ModalBody>
                     <ModalFooter>
-                        <ChangeBackgroundButton tokenId={String(props.tokenId)} backgroundTokenId={"0"} />
+                        <ChangeBackgroundButton tokenId={String(props.tokenId)} backgroundTokenId={"0"}/>
                         <Button colorScheme='blue' mr={3} onClick={props.onClose}>
                             Close
                         </Button>

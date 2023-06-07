@@ -7,7 +7,7 @@ export const requestNFTMetadataBackend = async (tokenIds: number[]) => {
     return metadatas
 }
 
-export const requestBackgroundMetadataBackend = async (tokenIds: number[]) => {
+export const requestBackgroundMetadataBackend = async (tokenIds: number[]): Promise<{[p: number]: Promise<Response>}> => {
     let metadatas: { [key: number]: Promise<Response> } = {};
 
     for (const tokenId of tokenIds)
