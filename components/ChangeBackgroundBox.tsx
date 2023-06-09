@@ -25,7 +25,7 @@ export default function ChangeBackgroundBox(props: ChangeBackgroundBoxProps) {
                         <div className="flex flex-col items-end gap-2">
                             <div>#{props.tokenId}</div>
                             <Image
-                                alt={`Yiqi #${props.tokenId}`}
+                                alt={`Background #${props.tokenId}`}
                                 loader={() => props.tokenJsonMetadata.image}
                                 src={props.tokenJsonMetadata.image}
                                 height="250"
