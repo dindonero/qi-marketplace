@@ -7,7 +7,7 @@ import {CHANGE_BACKGROUND_MESSAGE} from "../constants/configHelper";
 
 interface ChangeBackgroundButtonProps {
     tokenId: string;
-    backgroundTokenId: string;
+    backgroundTokenId: string | undefined;
 }
 export const ChangeBackgroundButton = (props: ChangeBackgroundButtonProps) => {
 
@@ -20,7 +20,7 @@ export const ChangeBackgroundButton = (props: ChangeBackgroundButtonProps) => {
     const handleChangeBackground = async () => {
         setIsLoading(true)
         try {
-            const message = CHANGE_BACKGROUND_MESSAGE(account!, props.tokenId, props.backgroundTokenId);
+            const message = CHANGE_BACKGROUND_MESSAGE(account!, props.tokenId, props.backgroundTokenId!);
             const signer = await (await getProvider()).getSigner()
 
             const signature = await signer.signMessage(message);
@@ -57,7 +57,7 @@ export const ChangeBackgroundButton = (props: ChangeBackgroundButtonProps) => {
 
     return (
         <div className="container mx-auto p-4">
-            <Button onClick={handleChangeBackground} isDisabled={!isWeb3Enabled} isLoading={isLoading} colorScheme="blue" rounded="md" size="md">
+            <Button onClick={handleChangeBackground} isDisabled={!isWeb3Enabled || !props.backgroundTokenId} isLoading={isLoading} colorScheme="blue" rounded="md" size="md">
                 Change Background
             </Button>
         </div>
