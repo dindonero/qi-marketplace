@@ -53,31 +53,29 @@ const ListNFTs = (props: ListNFTsProps) => {
 
     return (
         <>
-            <div className="container mx-auto">
-                <div className="flex flex-wrap">
-                    {isWeb3Enabled ? (
-                        isFetchingNfts ? (
-                            <div>Loading...</div>
-                        ) : (
-                            isEmpty(listedNfts) ? (
-                                <div>No NFTs Owned</div>
-                            ) : (
-                                Object.keys(listedNfts).map((tokenId) => {
-                                    return (
-                                        <NFTBox
-                                            tokenId={tokenId}
-                                            tokenMetadataPromise={listedNfts[tokenId]}
-                                            key={tokenId}
-                                            isBackground={props.isBackground}
-                                        />
-                                    )
-                                })
-                            )
-                        )
+            <div className="flex flex-wrap">
+                {isWeb3Enabled ? (
+                    isFetchingNfts ? (
+                        <div>Loading...</div>
                     ) : (
-                        <div>Web3 Currently Not Enabled</div>
-                    )}
-                </div>
+                        isEmpty(listedNfts) ? (
+                            <div>No NFTs Owned</div>
+                        ) : (
+                            Object.keys(listedNfts).map((tokenId) => {
+                                return (
+                                    <NFTBox
+                                        tokenId={tokenId}
+                                        tokenMetadataPromise={listedNfts[tokenId]}
+                                        key={tokenId}
+                                        isBackground={props.isBackground}
+                                    />
+                                )
+                            })
+                        )
+                    )
+                ) : (
+                    <div>Web3 Currently Not Enabled</div>
+                )}
             </div>
         </>
     )
