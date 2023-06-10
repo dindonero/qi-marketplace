@@ -44,7 +44,6 @@ export const ChangeBackgroundButton = (props: ChangeBackgroundButtonProps) => {
                 position: "topR"
             })
         } catch (error: any) {
-            console.log(error)
             dispatch({
                 type: "error",
                 message: error.info?.error?.message ? error.info.error.message : "Yiqi background change failed",

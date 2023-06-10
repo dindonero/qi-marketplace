@@ -51,7 +51,6 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
     const fetchOwnedBackgrounds = async () => {
         setIsFetchingNfts(true)
         const ownedNfts = await fetchNFTMetadata()
-        console.log(ownedNfts)
         setNftsJsonMetadata(ownedNfts)
         setIsFetchingNfts(false)
     }

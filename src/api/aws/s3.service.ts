@@ -80,7 +80,7 @@ export const getImageMetadata = async (bucketName: string, keyName: string) => {
     };
 
     try {
-        const s3Object = await s3.getObject(params).promise();
+        const s3Object = await s3.headObject(params).promise();
         return Object.entries(s3Object.Metadata!).map(([trait_type, value]) => ({trait_type, value}));
     } catch (err) {
         console.error(err);
