@@ -51,6 +51,7 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
     const fetchOwnedBackgrounds = async () => {
         setIsFetchingNfts(true)
         const ownedNfts = await fetchNFTMetadata()
+        console.log(ownedNfts)
         setNftsJsonMetadata(ownedNfts)
         setIsFetchingNfts(false)
     }
@@ -90,10 +91,10 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
                             isEmpty(nftsJsonMetadata) ? (
                                 <div>No Backgrounds Owned</div>
                             ) : (
-                                Object.keys(nftsJsonMetadata).map((tokenId) => {
+                                Object.keys(nftsJsonMetadata).map((i) => {
                                     return (
-                                        <ChangeBackgroundBox key={tokenId} tokenId={tokenId}
-                                                             tokenJsonMetadata={nftsJsonMetadata[tokenId]}
+                                        <ChangeBackgroundBox key={i} tokenId={nftsJsonMetadata[i].yiqi_background_id.toString()}
+                                                             tokenJsonMetadata={nftsJsonMetadata[i]}
                                                              onSelectBackground={(backTokenId: string | undefined) => setSelectedBackground(backTokenId)}
                                                              selectedBackgroundTokenId={selectedBackground}/>
                                     )
