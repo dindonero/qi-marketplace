@@ -47,7 +47,7 @@ export default function NFTDisplay() {
             }
             { /* tokenId!.toString() hack todo improve this*/}
             tokenId ?
-            (<OpenseaButton tokenId={tokenId!.toString()} isBackground={false}/>) :
+            (<OpenseaButton tokenId={String(tokenId)} isBackground={false}/>) :
             (<div></div>)
             <h1 className="font-bold text-5xl">#{tokenId}</h1>
         </div>

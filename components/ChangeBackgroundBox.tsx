@@ -13,8 +13,6 @@ export default function ChangeBackgroundBox(props: ChangeBackgroundBoxProps) {
 
     return (
         (
-            <div className="container mx-auto">
-                <div className="flex flex-wrap">
             <div className="p-4">
                 <Card
                     title={`Yiqi #${props.tokenId}`}
@@ -24,7 +22,7 @@ export default function ChangeBackgroundBox(props: ChangeBackgroundBoxProps) {
                     <div className="p-2">
                         <div className="flex flex-col items-end gap-2">
                             <div>#{props.tokenId}</div>
-                            <Image
+                            <Image 
                                 alt={`Background #${props.tokenId}`}
                                 loader={() => props.tokenJsonMetadata.image}
                                 src={props.tokenJsonMetadata.image}
@@ -34,9 +32,6 @@ export default function ChangeBackgroundBox(props: ChangeBackgroundBoxProps) {
                         </div>
                     </div>
                 </Card>
-                <div className={"p-2"}/>
-            </div>
-            </div>
             </div>
         )
     )
