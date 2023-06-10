@@ -74,17 +74,12 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
     return (
         <>
 
-            <Modal isOpen={props.isOpen} onClose={props.onClose} size="full">
+            <Modal isOpen={props.isOpen} onClose={props.onClose} size="full" scrollBehavior="inside">
                 <ModalOverlay/>
                 <ModalContent>
                     <ModalHeader>Select a background</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
-                        {/* <div className="bulkImageArea">
-                        {bulkImages.map((img) => (
-                            <img key={img} src={img} alt={img} className="bulkImage" />
-                        ))}
-                    </div> */}
                         {isFetchingNfts ? (
                             <div>Loading...</div>
                         ) : (

@@ -72,7 +72,7 @@ const BurnModal = (props: BurnModalProps) => {
 
     return (
         <>
-            <Modal isOpen={props.isOpen} onClose={props.onClose}>
+            <Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Burn Yiqi</ModalHeader>
