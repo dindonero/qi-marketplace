@@ -12,7 +12,7 @@ export default function NFTDisplay() {
     const [isOpenBurnModal, SetisOpenBurnModal] = useState<boolean>(true)
 
     const router = useRouter();
-    const tokenId = router.query.tokenId;
+    const tokenId = +router.query.tokenId!;
     const image = router.query.image;
     const backgroundImage = "https://yiqi-nft.s3.amazonaws.com/" + tokenId + ".png";
 
@@ -46,9 +46,7 @@ export default function NFTDisplay() {
                 : <ChangeBackgroundModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)}/>
             }
             { /* tokenId!.toString() hack todo improve this*/}
-            tokenId ?
-            (<OpenseaButton tokenId={tokenId!.toString()} isBackground={false}/>) :
-            (<div></div>)
+            <OpenseaButton tokenId={tokenId.toString()} isBackground={false}/>
             <h1 className="font-bold text-5xl">#{tokenId}</h1>
         </div>
     )
