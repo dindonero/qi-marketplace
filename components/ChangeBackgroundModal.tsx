@@ -86,14 +86,16 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
                             isEmpty(nftsJsonMetadata) ? (
                                 <div>No Backgrounds Owned</div>
                             ) : (
-                                Object.keys(nftsJsonMetadata).map((i) => {
-                                    return (
-                                        <ChangeBackgroundBox key={i} tokenId={nftsJsonMetadata[i].yiqi_background_id.toString()}
-                                                             tokenJsonMetadata={nftsJsonMetadata[i]}
-                                                             onSelectBackground={(backTokenId: string | undefined) => setSelectedBackground(backTokenId)}
-                                                             selectedBackgroundTokenId={selectedBackground}/>
-                                    )
-                                })
+                                <div className="flex flex-wrap gap-4">
+                                     {Object.keys(nftsJsonMetadata).map((i) => {
+                                        return (
+                                            <ChangeBackgroundBox key={i} tokenId={nftsJsonMetadata[i].yiqi_background_id.toString()}
+                                                tokenJsonMetadata={nftsJsonMetadata[i]}
+                                                onSelectBackground={(backTokenId: string | undefined) => setSelectedBackground(backTokenId)}
+                                                selectedBackgroundTokenId={selectedBackground}/>
+                                        )
+                                    })}
+                                </div>
                             )
                         )
                         }
