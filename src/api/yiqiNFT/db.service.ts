@@ -1,5 +1,5 @@
 import {NFT_TABLE_NAME} from "@/api/aws/aws-helper-config";
-import {GetItemCommand, PutItemCommand, ScanCommand} from "@aws-sdk/client-dynamodb";
+import {GetItemCommand, PutItemCommand, ScanCommand, UpdateItemCommand} from "@aws-sdk/client-dynamodb";
 import {ddbClient} from "@/api/aws/dynamoDB.config";
 
 export const getYiqiNFTByTokenId = async (tokenId: number) => {
@@ -39,6 +39,21 @@ export const storeYiqiNFT = async (tokenId: number, fileName: string, background
         },
     };
     const command = new PutItemCommand(params);
+    await ddbClient.send(command);
+}
+
+export const updateYiqiNFTBackground = async (tokenId: number, backgroundTokenId: number) => {
+    const params = {
+        TableName: NFT_TABLE_NAME,
+        Key: {
+            "tokenId": { N: tokenId.toString() },
+        },
+        UpdateExpression: "SET backgroundTokenId = :b",
+        ExpressionAttributeValues: {
+            ":b": { N: backgroundTokenId.toString() },
+        }
+    };
+    const command = new UpdateItemCommand(params);
     await ddbClient.send(command);
 }
 
