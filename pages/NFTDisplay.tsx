@@ -18,6 +18,7 @@ export default function NFTDisplay() {
     const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
 
     const previewBackgroundChange = async () => {
+
         const transparentUrl = await requestTransparentURL(tokenId);
 
         const transparentJSON = await transparentUrl.json();
@@ -27,8 +28,9 @@ export default function NFTDisplay() {
     }
 
     useEffect(() => {
-        previewBackgroundChange();
-    }, []);
+        if (router.isReady)
+            previewBackgroundChange();
+    }, [router.isReady]);
 
     return backgroundImage ? (
         <div style={{
