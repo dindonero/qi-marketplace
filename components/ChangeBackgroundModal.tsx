@@ -13,13 +13,14 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
-    ModalOverlay,
+    ModalOverlay, useDisclosure,
 } from '@chakra-ui/react'
 import ChangeBackgroundButton from "./ChangeBackgroundButton";
 import Image from "next/image";
 import {getTokenIdsOwnedByUser} from "@/nftMetadata/alchemyConnector";
 import {useRouter} from "next/router";
 import ChangeBackgroundBox from "./ChangeBackgroundBox";
+import PreviewBackgroundChangeModal from "./PreviewBackgroundChangeModal";
 
 interface ChangeBackgroundModalProps {
     isOpen: boolean;
@@ -32,6 +33,8 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
     const {isWeb3Enabled, account} = useMoralis()
 
     const router = useRouter()
+
+    const {isOpen, onOpen, onClose} = useDisclosure();
 
     const [nftsJsonMetadata, setNftsJsonMetadata] = useState<any>({})
     const [isFetchingNfts, setIsFetchingNfts] = useState<boolean>(true)
@@ -72,7 +75,6 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
 
     return (
         <>
-
             <Modal isOpen={props.isOpen} onClose={props.onClose} size="full" scrollBehavior="inside">
                 <ModalOverlay/>
                 <ModalContent>
@@ -86,12 +88,13 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
                                 <div>No Backgrounds Owned</div>
                             ) : (
                                 <div className="flex flex-wrap gap-4">
-                                     {Object.keys(nftsJsonMetadata).map((i) => {
+                                    {Object.keys(nftsJsonMetadata).map((i) => {
                                         return (
-                                            <ChangeBackgroundBox key={i} tokenId={nftsJsonMetadata[i].yiqi_background_id.toString()}
-                                                tokenJsonMetadata={nftsJsonMetadata[i]}
-                                                onSelectBackground={(backTokenId: string | undefined) => setSelectedBackground(backTokenId)}
-                                                selectedBackgroundTokenId={selectedBackground}/>
+                                            <ChangeBackgroundBox key={i}
+                                                                 tokenId={nftsJsonMetadata[i].yiqi_background_id.toString()}
+                                                                 tokenJsonMetadata={nftsJsonMetadata[i]}
+                                                                 onSelectBackground={(backTokenId: string | undefined) => setSelectedBackground(backTokenId)}
+                                                                 selectedBackgroundTokenId={selectedBackground}/>
                                         )
                                     })}
                                 </div>
@@ -100,14 +103,21 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
                         }
                     </ModalBody>
                     <ModalFooter>
-                        <ChangeBackgroundButton tokenId={String(props.tokenId)}
-                                                backgroundTokenId={selectedBackground}/>
+                        <Button isDisabled={!selectedBackground} onClick={onOpen} colorScheme='blue' mr={3}>
+                            Change Background
+                        </Button>
                         <Button colorScheme='blue' mr={3} onClick={props.onClose}>
                             Close
                         </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
+            {
+                selectedBackground ?
+                    <PreviewBackgroundChangeModal isOpen={isOpen} onClose={onClose} tokenId={props.tokenId}
+                                                  backgroundTokenId={selectedBackground}/>
+                    : <></>
+            }
         </>
     )
 
