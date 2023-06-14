@@ -2,6 +2,7 @@ import React from 'react';
 import Link from "next/link";
 import {CHAIN_ID} from "../constants/configHelper";
 import networkMapping from "../constants/networkMapping.json";
+import {Button} from "@chakra-ui/react";
 
 interface OpenseaButtonProps {
     tokenId: string
@@ -19,11 +20,11 @@ export const OpenseaButton = (props: OpenseaButtonProps) => {
     const link = props.isBackground ? OPENSEA_URL + yiqiBackgroundAddress + "/" + props.tokenId : OPENSEA_URL + yiqiAddress + "/" + props.tokenId
 
     return (
-        <div className="container mx-auto p-4">
+        <Button>
             <Link href={link} target="_blank" className={"text-yellow-950 text-xl font-bold text"}>
                 Opensea
             </Link>
-        </div>
+        </Button>
     )
 };
 

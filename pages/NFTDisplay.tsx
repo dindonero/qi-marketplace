@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import BurnModal from "../components/BurnModal";
 import ChangeBackgroundModal from "../components/ChangeBackgroundModal";
-import {Box, Button, useDisclosure} from "@chakra-ui/react";
+import {Box, Button, useDisclosure, Flex} from "@chakra-ui/react";
 import OpenseaButton from "../components/OpenseaButton";
 import {requestBackgroundMetadata, requestTransparentURL} from "@/nftMetadata/fetchMetadata";
 
@@ -33,61 +33,68 @@ export default function NFTDisplay() {
     return backgroundImage ? (
         <div style={{
             backgroundImage: `url(${backgroundImage})`,
-            backgroundSize: "contain",
-            backgroundPosition: "center",
+            backgroundSize: "cover",
+            backgroundPosition: "top",
             backgroundRepeat: "no-repeat",
             width: "100%",
             height: "100vh",
-            position: "relative",
+            position: "fixed",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            color: "white"
+            color: "white",
         }}>
+            {transparentImage ? <img src={transparentImage} alt="Foreground" style={{
+                position: "fixed",
+                objectFit: 'contain',
+                height: '100%',
+                width: 'auto',
+                left: 100
+            }}/> : <></>}
             <Box
-                position="absolute"
-                top={5}
-                right={5}
+                borderWidth='1px' borderRadius='lg'
+                p='10'
+                position="fixed"
+                top={20}
+                right={200}
                 display="flex"
                 flexDirection="column"
-                gap={4}
+                gap={5}
+                bg='gray.600'
             >
-                <Button
-                    onClick={() => {
-                        SetisOpenBurnModal(true);
-                        onOpen();
-                    }}
-                    colorScheme="red"
-                    _hover={{ bg: 'red.700' }}
-                >
-                    Burn
-                </Button>
-                <Button
-                    onClick={() => {
-                        SetisOpenBurnModal(false);
-                        onOpen();
-                    }}
-                    colorScheme="blue"
-                    _hover={{ bg: 'blue.700' }}
-                >
-                    Change Background
-                </Button>
+                <h1 style={{ fontSize: "1.3rem" }}>Token ID #{tokenId}</h1>
+                <Flex alignItems={"center"} justifyContent={"space-evenly"} h={16}>
+                    <Button
+                        onClick={() => {
+                            SetisOpenBurnModal(false);
+                            onOpen();
+                        }}
+                        colorScheme="blue"
+                        _hover={{ bg: 'blue.700' }}
+                        marginRight={5}
+                    >
+                        Change Background
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            SetisOpenBurnModal(true);
+                            onOpen();
+                        }}
+                        colorScheme="red"
+                        _hover={{ bg: 'red.700' }}
+                    >
+                        Burn
+                    </Button>
+                </Flex>
                 <OpenseaButton
                     tokenId={tokenId.toString()}
                     isBackground={false}
                 />
             </Box>
-            <h1 style={{ position: "absolute", top: 10, left: 10, fontSize: "2rem" }}>#{tokenId}</h1>
             {isOpenBurnModal ?
                 <BurnModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)} />
                 : <ChangeBackgroundModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)} />
             }
-            {transparentImage ? <img src={transparentImage} alt="Foreground" style={{
-                position: "absolute",
-                objectFit: 'contain',
-                height: '100%',
-                width: 'auto',
-            }}/> : <></>}
         </div>
     ) : (<></>)
 }
