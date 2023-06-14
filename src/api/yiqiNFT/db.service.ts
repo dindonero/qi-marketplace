@@ -12,7 +12,7 @@ export const getYiqiNFTByTokenId = async (tokenId: number) => {
     };
     const command = new GetItemCommand(params)
     const result = await ddbClient.send(command)
-    console.log(result)
+
     return result.Item!;
 }
 

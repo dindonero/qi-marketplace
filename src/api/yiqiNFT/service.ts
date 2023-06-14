@@ -38,8 +38,12 @@ export const getTransparentURL = async (tokenId: number) => {
     const yiqiNFT = await getYiqiNFTByTokenId(tokenId)
     const baseImageKey = yiqiNFT.fileName.S!
 
+    const backgroundFilenameRec = await getBackgroundByTokenId(+yiqiNFT.backgroundTokenId.N!)
+    const backgroundFilename = backgroundFilenameRec!.fileName.S!
+
     return {
-        image: `https://${QI_TRANSPARENT_BUCKET}.s3.amazonaws.com/${baseImageKey}`
+        image: `https://${QI_TRANSPARENT_BUCKET}.s3.amazonaws.com/${baseImageKey}`,
+        background: `https://${QI_BACKGROUND_BUCKET}.s3.amazonaws.com/${backgroundFilename}`
     }
 }
 

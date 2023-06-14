@@ -1,20 +1,36 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import BurnModal from "../components/BurnModal";
 import ChangeBackgroundModal from "../components/ChangeBackgroundModal";
 import {Box, Button, useDisclosure} from "@chakra-ui/react";
 import OpenseaButton from "../components/OpenseaButton";
+import {requestBackgroundMetadata, requestTransparentURL} from "@/nftMetadata/fetchMetadata";
 
 export default function NFTDisplay() {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [isOpenBurnModal, SetisOpenBurnModal] = useState<boolean>(true);
 
     const router = useRouter();
     const tokenId = +router.query.tokenId!;
-    const noBackground = "https://yiqi-transparent.s3.eu-north-1.amazonaws.com/0_0+(1)_transparent.png";
-    const backgroundImage = "https://yiqi-background.s3.amazonaws.com/1.png";
 
-    return (
+    const [isOpenBurnModal, SetisOpenBurnModal] = useState<boolean>(true);
+
+    const [transparentImage, setTransparentImage] = useState<string | null>(null);
+    const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+
+    const previewBackgroundChange = async () => {
+        const transparentUrl = await requestTransparentURL(tokenId);
+
+        const transparentJSON = await transparentUrl.json();
+
+        setTransparentImage(transparentJSON.image);
+        setBackgroundImage(transparentJSON.background);
+    }
+
+    useEffect(() => {
+        previewBackgroundChange();
+    }, []);
+
+    return backgroundImage ? (
         <div style={{
             backgroundImage: `url(${backgroundImage})`,
             backgroundSize: "contain",
@@ -66,12 +82,12 @@ export default function NFTDisplay() {
                 <BurnModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)} />
                 : <ChangeBackgroundModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)} />
             }
-            <img src={noBackground} alt="Foreground" style={{
+            {transparentImage ? <img src={transparentImage} alt="Foreground" style={{
                 position: "absolute",
                 objectFit: 'contain',
                 height: '100%',
                 width: 'auto',
-            }} />
+            }}/> : <></>}
         </div>
-    )
+    ) : (<></>)
 }

@@ -32,8 +32,6 @@ const PreviewBackgroundChangeModal = (props: PreviewBackgroundChangeModalProps) 
         const backgroundJSON = await backgroundMetadata.json();
         const transparentJSON = await transparentUrl.json();
 
-        console.log(isLoadingPreview)
-
         setTransparentImage(transparentJSON.image);
         setBackgroundImage(backgroundJSON.image);
         setIsLoadingPreview(false);
