@@ -56,8 +56,8 @@ export const ChangeBackgroundButton = (props: ChangeBackgroundButtonProps) => {
 
     return (
         <div className="container mx-auto p-4">
-            <Button onClick={handleChangeBackground} isDisabled={!isWeb3Enabled || !props.backgroundTokenId} isLoading={isLoading} colorScheme="blue" rounded="md" size="md">
-                Change Background
+            <Button onClick={handleChangeBackground} isDisabled={!isWeb3Enabled || !props.backgroundTokenId} isLoading={isLoading} colorScheme="green" rounded="md" size="md">
+                Confirm
             </Button>
         </div>
     )
