@@ -3,7 +3,7 @@ import {Card} from "web3uikit"
 import {useEffect, useState} from "react";
 import { useRouter } from "next/router";
  
-export default function NFTBox({tokenId, tokenMetadataPromise }: any) {
+export default function NFTBox({tokenId, tokenMetadataPromise, isBackground }: any) {
 
     const [tokenMetadata, setTokenMetadata] = useState<any>(undefined);
     const router = useRouter();
@@ -18,8 +18,8 @@ export default function NFTBox({tokenId, tokenMetadataPromise }: any) {
         handleTokenMetadataPromise()
     }, [])
 
-    const navigateToYiQiDisplay = (tokenId : any) => {
-        router.push(`/NFTDisplay?tokenId=${tokenId}`);
+    const navigateToYiQiDisplay = (tokenId : any, image: any) => {
+        router.push(`/NFTDisplay?tokenId=${tokenId}&image=${image}`);
       };
 
     return (
@@ -27,7 +27,7 @@ export default function NFTBox({tokenId, tokenMetadataPromise }: any) {
         <div className="p-4">
             <Card
                 title={`Yiqi #${tokenId}`}
-                onClick={() => navigateToYiQiDisplay(tokenId)}
+                onClick={!isBackground ? () => navigateToYiQiDisplay(tokenId, tokenMetadata.image) : undefined}
             >
                 <div className="p-2">
                     <div className="flex flex-col items-end gap-2">

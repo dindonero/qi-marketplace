@@ -12,6 +12,7 @@ export const getYiqiNFTByTokenId = async (tokenId: number) => {
     };
     const command = new GetItemCommand(params)
     const result = await ddbClient.send(command)
+
     return result.Item!;
 }
 
@@ -28,12 +29,13 @@ export const getAllYiqiBaseFiles = async () => {
     return response.Items.map((item) => item[fileNameAttribute].S!);
 }
 
-export const storeYiqiNFT = async (tokenId: number, fileName: string) => {
+export const storeYiqiNFT = async (tokenId: number, fileName: string, backgroundTokenId: number) => {
     const params = {
         TableName: NFT_TABLE_NAME,
         Item: {
             ["tokenId"]: { N: tokenId.toString() },
             ["fileName"]: { S: fileName },
+            ["backgroundTokenId"]: { N: backgroundTokenId.toString() },
         },
     };
     const command = new PutItemCommand(params);

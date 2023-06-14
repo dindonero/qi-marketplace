@@ -4,6 +4,7 @@ import {Alchemy, Network} from "alchemy-sdk";
 import {requestBackgroundMetadataBackend, requestNFTMetadataBackend} from "@/nftMetadata/fetchMetadata";
 import {useEffect, useState} from "react";
 import NFTBox from "../components/NFTBox";
+import {getTokenIdsOwnedByUser} from "@/nftMetadata/alchemyConnector";
 
 interface ListNFTsProps {
     nftAddress: string,
@@ -17,26 +18,8 @@ const ListNFTs = (props: ListNFTsProps) => {
     const [listedNfts, setListedNfts] = useState<any>({})
     const [isFetchingNfts, setIsFetchingNfts] = useState<boolean>(true)
 
-    const getTokenIdsOwnedByUser = async () => {
-
-        const settings = {
-            apiKey: process.env.ALCHEMY_API_KEY, // Replace with your Alchemy API Key.
-            network: Network.ETH_GOERLI, // Replace with your network.
-        };
-
-        console.log(props.nftAddress)
-
-        const alchemy = new Alchemy(settings);
-
-        const {ownedNfts} = await alchemy.nft.getNftsForOwner(account!, {
-            contractAddresses: [props.nftAddress],
-            omitMetadata: true
-        })
-        return ownedNfts.map((nft: any) => nft.tokenId)
-    }
-
     const fetchNFTMetadata = async () => {
-        const tokenIds = await getTokenIdsOwnedByUser()
+        const tokenIds = await getTokenIdsOwnedByUser(account!, props.nftAddress)
         let nftMetadatas
         if (!props.isBackground) {
             nftMetadatas = await requestNFTMetadataBackend(tokenIds)
@@ -70,30 +53,29 @@ const ListNFTs = (props: ListNFTsProps) => {
 
     return (
         <>
-            <div className="container mx-auto">
-                <div className="flex flex-wrap">
-                    {isWeb3Enabled ? (
-                        isFetchingNfts ? (
-                            <div>Loading...</div>
-                        ) : (
-                            isEmpty(listedNfts) ? (
-                                <div>No NFTs Owned</div>
-                            ) : (
-                                Object.keys(listedNfts).map((tokenId) => {
-                                    return (
-                                        <NFTBox
-                                            tokenId={tokenId}
-                                            tokenMetadataPromise={listedNfts[tokenId]}
-                                            key={tokenId}
-                                        />
-                                    )
-                                })
-                            )
-                        )
+            <div className="flex flex-wrap">
+                {isWeb3Enabled ? (
+                    isFetchingNfts ? (
+                        <div>Loading...</div>
                     ) : (
-                        <div>Web3 Currently Not Enabled</div>
-                    )}
-                </div>
+                        isEmpty(listedNfts) ? (
+                            <div>No NFTs Owned</div>
+                        ) : (
+                            Object.keys(listedNfts).map((tokenId) => {
+                                return (
+                                    <NFTBox
+                                        tokenId={tokenId}
+                                        tokenMetadataPromise={listedNfts[tokenId]}
+                                        key={tokenId}
+                                        isBackground={props.isBackground}
+                                    />
+                                )
+                            })
+                        )
+                    )
+                ) : (
+                    <div>Web3 Currently Not Enabled</div>
+                )}
             </div>
         </>
     )

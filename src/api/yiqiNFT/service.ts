@@ -33,6 +33,20 @@ export const getYiqiBaseImage = async (tokenId: number) => {
     return getImageFromS3Bucket(QI_TRANSPARENT_BUCKET, baseImageKey)
 }
 
+export const getTransparentURL = async (tokenId: number) => {
+
+    const yiqiNFT = await getYiqiNFTByTokenId(tokenId)
+    const baseImageKey = yiqiNFT.fileName.S!
+
+    const backgroundFilenameRec = await getBackgroundByTokenId(+yiqiNFT.backgroundTokenId.N!)
+    const backgroundFilename = backgroundFilenameRec!.fileName.S!
+
+    return {
+        image: `https://${QI_TRANSPARENT_BUCKET}.s3.amazonaws.com/${baseImageKey}`,
+        background: `https://${QI_BACKGROUND_BUCKET}.s3.amazonaws.com/${backgroundFilename}`
+    }
+}
+
 export const mintYiqiNFT = async (tokenId: number) => {
 
     const usedBaseImages = await getAllYiqiBaseFiles()
@@ -47,7 +61,7 @@ export const mintYiqiNFT = async (tokenId: number) => {
         backgroundImageObj = await getRandomImageFromS3Bucket(QI_BACKGROUND_BUCKET)
 
 
-    await storeYiqiNFT(tokenId, mainImageObj.key)
+    await storeYiqiNFT(tokenId, mainImageObj.key, backgroundTokenId)
     await storeBackground(backgroundTokenId, backgroundImageObj.key)
 
     const yiqiImageBuffer = await imageMerge(mainImageObj, backgroundImageObj, tokenId)

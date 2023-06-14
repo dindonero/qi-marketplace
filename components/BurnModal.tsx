@@ -37,7 +37,6 @@ const BurnModal = (props: BurnModalProps) => {
     useEffect(() => {
         if (!isWeb3Enabled || !appContext || !appContext!.isConnectedToCorrectChain)
             return
-        console.log(!appContext?.isConnectedToCorrectChain)
         // Hack due to lack of Curve contract on goerli
         if (chainId === "5")
             setMinAmountOut(BigInt(0))
@@ -73,7 +72,7 @@ const BurnModal = (props: BurnModalProps) => {
 
     return (
         <>
-            <Modal isOpen={props.isOpen} onClose={props.onClose}>
+            <Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Burn Yiqi</ModalHeader>
