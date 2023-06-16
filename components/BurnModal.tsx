@@ -99,7 +99,7 @@ const BurnModal = (props: BurnModalProps) => {
                                 <HStack>
                                     {showInput ? (
                                         <>
-                                            <NumberInput defaultValue={DEFAULT_SLIPPAGE} min={MIN_SLIPPAGE} max={MAX_SLIPPAGE} precision={1} step={0.1} size='sm'>
+                                            <NumberInput defaultValue={slippage} min={MIN_SLIPPAGE} max={MAX_SLIPPAGE} precision={1} step={0.1} size='sm'>
                                                 <NumberInputField value={slippage} onChange={(ev: React.ChangeEvent<HTMLInputElement>) => setSlippage(+ev.target.value)} />
                                             </NumberInput>
                                             <Button size="sm" onClick={() => handleSlippage(slippage)}><CheckIcon /></Button>

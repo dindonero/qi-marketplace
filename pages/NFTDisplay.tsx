@@ -7,6 +7,7 @@ import OpenseaButton from "../components/OpenseaButton";
 import {requestBackgroundMetadata, requestTransparentURL} from "@/nftMetadata/fetchMetadata";
 import AddressDisplayComponent from "../components/AddressDisplayComponent";
 import {getYiqiNFTOwner} from "@/ethersHelper";
+import MetadataDropdown from "../components/MetadataDropdown";
 
 export default function NFTDisplay() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -59,6 +60,19 @@ export default function NFTDisplay() {
                 width: 'auto',
                 left: 100
             }}/> : <></>}
+            <Box
+                borderWidth='1px' borderRadius='lg'
+                p='10'
+                position="fixed"
+                bottom={100}
+                right={200}
+                display="flex"
+                flexDirection="column"
+                gap={5}
+                bg='gray.600'
+            >
+                <MetadataDropdown tokenId={tokenId.toString()} />
+            </Box>
             <Box
                 borderWidth='1px' borderRadius='lg'
                 p='10'
