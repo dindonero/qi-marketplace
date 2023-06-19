@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import styles from './Mint.module.css'; // Import CSS file for styling
+import styles from './mint.module.css'; // Import CSS file for styling
 import Image from 'next/image';
 
 const Mint = () => {
