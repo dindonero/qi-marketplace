@@ -1,0 +1,44 @@
+.flipContainer {
+  justify-content: "center";
+  display: "flex";
+  align-items: "center";
+  height: "100%"
+}
+
+.flipCard {
+  width: 250px;
+  height: 250px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.flipCardInner {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+.flipCardFront,
+.flipCardBack {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+}
+
+.flipCardFront {
+  background-color: #ccc;
+  transform: rotateY(0deg);
+}
+
+.flipCardBack {
+  background-color: #555;
+  color: #fff;
+  transform: rotateY(180deg);
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
