@@ -1,5 +1,5 @@
 import {Box, Flex, Text, Heading, Image, Button} from "@chakra-ui/react";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import HomepageInfoModal from "../components/HomepageInfoModal";
 import {requestNFTMetadata, requestNFTMetadataBackend} from "@/nftMetadata/fetchMetadata";
 import {useSpring, animated, config, useTrail} from 'react-spring';
@@ -8,27 +8,29 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 
 const Home = () => {
-
+    const ref = useRef<null | HTMLDivElement>(null);
     const backgroundImage = "/images/home9.jpg";
     const backgroundImage2 = "/images/home10.jpg";
     const [artwork, setArtwork] = useState<string[]>([]);
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const getArtworkImages = async () => {
-        const tokenIds = Array.from(Array(10).keys())
+    const handleClick = () => {
+        ref.current?.scrollIntoView({behavior: 'smooth', block: 'start'});
+    };
 
-        const tokenResponses = await requestNFTMetadataBackend(tokenIds);
-        const tokenMetadatas = await Promise.all(Object.values(tokenResponses))
-        const tokenMetadatasJSON = await Promise.all(tokenMetadatas.map((metadata) => metadata.json()));
+    function importAll(r:any) {
+        return r.keys().map(r);
+      }
+
+    const getArtworkImages = async () => {
+        const images = importAll(require.context("../public/images/mintLoading/", true));
 
         let art: string[] = [];
 
         try {
-            tokenMetadatasJSON.forEach((metadata) => {
-                const image = metadata.image;
-                if (image)
-                    art.push(image);
+            images.forEach((ID:any) => {
+                art.push(ID.default.src);
             })
         } catch {}
         setArtwork(art);
@@ -66,29 +68,6 @@ const Home = () => {
       };
 
 
-    const scrolling = useSpring({
-        from: { transform: 'translate3d(0%,0,0)' },
-        to: async (next, cancel) => {
-            await next({transform: `translate3d(-100%,0,0)`}),
-            await next({transform: `translate3d(-200%,0,0)`}),
-            await next({transform: `translate3d(-300%,0,0)`}),
-            await next({transform: `translate3d(-400%,0,0)`}),
-            await next({transform: `translate3d(-500%,0,0)`}),
-            await next({transform: `translate3d(-600%,0,0)`}),
-            await next({transform: `translate3d(-700%,0,0)`}),
-            await next({transform: `translate3d(-800%,0,0)`})
-        },
-        config: config.slow,
-        reset: true,
-        loop: true
-    });
-
-    const trails = useTrail(artwork.length, {
-        from: {opacity: 0},
-        to: {opacity: 1},
-        delay: 200,
-    });
-
     return (
         <>
             <Box
@@ -97,6 +76,7 @@ const Home = () => {
                     backgroundSize: "cover",
                     backgroundPosition: "left",
                     backgroundRepeat: "no-repeat",
+                    backgroundAttachment: "fixed",
                     width: "100%",
                     height: "100vh",
                     color: "white",
@@ -118,28 +98,15 @@ const Home = () => {
                         DeFi ecosystem that aligns your interests and provides benefits for all parties.
                     </Text>
 
-                    <Button colorScheme="blue" size="lg" onClick={() => setIsOpen(!isOpen)}>
+                    <Button colorScheme="blue" size="lg" onClick={handleClick}>
                         Learn More
                     </Button>
                 </Flex>
-                {/* <HomepageInfoModal isOpen={isOpen} onClose={() => setIsOpen(!isOpen)}/> */}
             </Box>
-            <Box marginRight='10%' marginLeft='10%'>
+            <Box marginRight='10%' marginLeft='10%' ref={ref} style={{scrollMarginTop: "10%"}}>
                 <HomepageInfoModal />
             </Box>
-            {/* <Box
-                style={{
-                    backgroundImage: `url(${backgroundImage2})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "left",
-                    backgroundRepeat: "no-repeat",
-                    width: "100%",
-                    height: "100vh",
-                    color: "white",
-                }}
-            ></Box>  */}
-            
-            <Box marginRight='10%' marginLeft='10%'>
+            <Box p={10}>
                 <Slider {...settings} >
                     {artwork.map((image, index) => {
                         return (
@@ -149,7 +116,7 @@ const Home = () => {
                                         borderRadius: "2vw",
                                         margin: "0 50px",
                                         objectFit: "cover",
-                                        width: "80%",
+                                        width: "70%",
                                     }}/>
                             </div>
                         )
@@ -157,33 +124,18 @@ const Home = () => {
                     )}
                 </Slider>
             </Box>
-        
-            {/*NFT Artwork */}
-            {/* <Box bg="white">
-                <Heading as="h2" size="2xl" mb={6}>NFT Artwork</Heading>
-                <div style={{display: 'flex', overflow: 'hidden'}}>
-                    {trails.map((style, index) => (
-                        <animated.img
-                            key={artwork[index]}
-                            src={artwork[index]}
-                            alt={artwork[index]}
-                            style={{...style, ...scrolling, width: '40%', height: 'auto'}}
-                        />
-                    ))}
-                </div>
-            </Box> */}
-
-            {/* <Box
+            <Box
                 style={{
                     backgroundImage: `url(${backgroundImage2})`,
                     backgroundSize: "cover",
                     backgroundPosition: "left",
                     backgroundRepeat: "no-repeat",
+                    backgroundAttachment: "fixed",
                     width: "100%",
                     height: "100vh",
                     color: "white",
                 }}
-            ></Box> */}
+            ></Box>
 
         </>
     );
