@@ -9,6 +9,7 @@ import {getProvider, getYiqiContract} from "@/ethersHelper";
 interface BurnButtonProps {
     tokenId: string;
     minAmountOut?: BigInt;
+    isDisabled: boolean;
 }
 export const BurnButton = (props: BurnButtonProps) => {
 
@@ -56,7 +57,7 @@ export const BurnButton = (props: BurnButtonProps) => {
 
     return (
         <div className="container mx-auto p-4">
-            <Button isDisabled={!isWeb3Enabled || !appContext?.isConnectedToCorrectChain || !props.minAmountOut || BigInt(props.minAmountOut.toString()) < BigInt(0)}
+            <Button isDisabled={!isWeb3Enabled || !appContext?.isConnectedToCorrectChain || !props.minAmountOut || BigInt(props.minAmountOut.toString()) < BigInt(0) || props.isDisabled}
                     onClick={callBurnFunction} isLoading={isBurning} colorScheme="red" rounded="md" size="md">
                 Burn
             </Button>

@@ -12,6 +12,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 function App({Component, pageProps}: AppProps) {
     return (
         <div>
+            <title>QiCity</title>
             <MoralisProvider initializeOnMount={false}>
                 <AppContextProvider >
                     <NotificationProvider>

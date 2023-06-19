@@ -2,7 +2,7 @@ export const requestNFTMetadataBackend = async (tokenIds: number[]) => {
     let metadatas: { [key: number]: Promise<Response> } = {};
 
     for (const tokenId of tokenIds)
-        metadatas[tokenId] = fetch(`/api/token/${tokenId}`)
+        metadatas[tokenId] = requestNFTMetadata(tokenId)
 
     return metadatas
 }
@@ -14,6 +14,10 @@ export const requestBackgroundMetadataBackend = async (tokenIds: number[]): Prom
         metadatas[tokenId] = requestBackgroundMetadata(tokenId)
 
     return metadatas
+}
+
+export const requestNFTMetadata = async (tokenId: number) => {
+    return fetch(`/api/token/${tokenId}`)
 }
 
 export const requestBackgroundMetadata = async (tokenId: number) => {

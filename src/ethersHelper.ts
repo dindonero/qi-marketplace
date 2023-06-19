@@ -34,3 +34,8 @@ export const getCurveContract = async () => {
     const curveAddress = networkMapping[CHAIN_ID].CurveEthStEthPool[networkMapping[CHAIN_ID].CurveEthStEthPool.length - 1]
     return new ethers.Contract(curveAddress, JSON.stringify(CurvePoolAbi), await getSigner());
 }
+
+export const getYiqiNFTOwner = async (tokenId: number): Promise<string> => {
+    const yiqiContract = await getYiqiContract()
+    return yiqiContract.ownerOf(tokenId)
+}

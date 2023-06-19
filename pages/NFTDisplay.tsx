@@ -5,6 +5,9 @@ import ChangeBackgroundModal from "../components/ChangeBackgroundModal";
 import {Box, Button, useDisclosure, Flex} from "@chakra-ui/react";
 import OpenseaButton from "../components/OpenseaButton";
 import {requestBackgroundMetadata, requestTransparentURL} from "@/nftMetadata/fetchMetadata";
+import AddressDisplayComponent from "../components/AddressDisplayComponent";
+import {getYiqiNFTOwner} from "@/ethersHelper";
+import MetadataDropdown from "../components/MetadataDropdown";
 
 export default function NFTDisplay() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -16,20 +19,24 @@ export default function NFTDisplay() {
 
     const [transparentImage, setTransparentImage] = useState<string | null>(null);
     const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+    const [ownerAddress, setOwnerAddress] = useState<string | undefined>(undefined);
 
-    const previewBackgroundChange = async () => {
+    const loadImages = async () => {
 
         const transparentUrl = await requestTransparentURL(tokenId);
 
         const transparentJSON = await transparentUrl.json();
 
+        const tokenOwner = await getYiqiNFTOwner(tokenId);
+
+        setOwnerAddress(tokenOwner);
         setTransparentImage(transparentJSON.image);
         setBackgroundImage(transparentJSON.background);
     }
 
     useEffect(() => {
         if (router.isReady)
-            previewBackgroundChange();
+            loadImages();
     }, [router.isReady]);
 
     return backgroundImage ? (
@@ -57,6 +64,19 @@ export default function NFTDisplay() {
                 borderWidth='1px' borderRadius='lg'
                 p='10'
                 position="fixed"
+                bottom={100}
+                right={200}
+                display="flex"
+                flexDirection="column"
+                gap={5}
+                bg='gray.600'
+            >
+                <MetadataDropdown tokenId={tokenId.toString()} />
+            </Box>
+            <Box
+                borderWidth='1px' borderRadius='lg'
+                p='10'
+                position="fixed"
                 top={20}
                 right={200}
                 display="flex"
@@ -65,6 +85,7 @@ export default function NFTDisplay() {
                 bg='gray.600'
             >
                 <h1 style={{ fontSize: "1.3rem" }}>Token ID #{tokenId}</h1>
+                <AddressDisplayComponent address={ownerAddress} />
                 <Flex alignItems={"center"} justifyContent={"space-evenly"} h={16}>
                     <Button
                         onClick={() => {
