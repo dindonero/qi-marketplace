@@ -103,9 +103,21 @@ const Home = () => {
                     </Button>
                 </Flex>
             </Box>
-            <Box marginRight='10%' marginLeft='10%' ref={ref} style={{scrollMarginTop: "10%"}}>
+            <Box marginRight='10%' marginLeft='10%' ref={ref} scrollMarginTop="5vh">
                 <HomepageInfoModal />
             </Box>
+            <Box
+                style={{
+                    backgroundImage: `url(${backgroundImage2})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "top",
+                    backgroundRepeat: "no-repeat",
+                    backgroundAttachment: "fixed",
+                    width: "100%",
+                    height: "100vh",
+                    color: "white",
+                }}
+            ></Box>
             <Box p={10}>
                 <Slider {...settings} >
                     {artwork.map((image, index) => {
@@ -124,18 +136,6 @@ const Home = () => {
                     )}
                 </Slider>
             </Box>
-            <Box
-                style={{
-                    backgroundImage: `url(${backgroundImage2})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "left",
-                    backgroundRepeat: "no-repeat",
-                    backgroundAttachment: "fixed",
-                    width: "100%",
-                    height: "100vh",
-                    color: "white",
-                }}
-            ></Box>
 
         </>
     );
