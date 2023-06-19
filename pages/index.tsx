@@ -3,10 +3,14 @@ import {useEffect, useState} from "react";
 import HomepageInfoModal from "../components/HomepageInfoModal";
 import {requestNFTMetadata, requestNFTMetadataBackend} from "@/nftMetadata/fetchMetadata";
 import {useSpring, animated, config, useTrail} from 'react-spring';
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 
 const Home = () => {
 
     const backgroundImage = "/images/home9.jpg";
+    const backgroundImage2 = "/images/home10.jpg";
     const [artwork, setArtwork] = useState<string[]>([]);
 
     const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +38,33 @@ const Home = () => {
         getArtworkImages();
     }, [])
 
+    var settings = {
+        infinite: true,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        autoplay: true,
+        speed: 3000,
+        autoplaySpeed: 3000,
+        cssEase: "linear",
+        responsive: [
+          {
+            breakpoint: 600,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 2,
+              initialSlide: 2
+            }
+          },
+          {
+            breakpoint: 480,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1
+            }
+          }
+        ]
+      };
+
 
     const scrolling = useSpring({
         from: { transform: 'translate3d(0%,0,0)' },
@@ -60,48 +91,6 @@ const Home = () => {
 
     return (
         <>
-            <Box style={{
-                backgroundImage: `url(${backgroundImage})`,
-                backgroundSize: "cover",
-                backgroundPosition: "left",
-                backgroundRepeat: "no-repeat",
-                width: "100%",
-                height: "auto",
-                color: "white",
-            }}>
-                {/* Hero Section */}
-                <Flex
-                    direction="column"
-                    align="center"
-                    justify="center"
-                    minH="100vh"
-                    p={10}
-                    bgGradient="linear(to-b, rgba(0,0,0,0.6), rgba(0,0,0,0.6))"
-                >
-                    <Heading as="h1" size="4xl" fontWeight="bold" mb={6}>
-                        Yiqi NFTs Marketplace
-                    </Heading>
-                    <Text fontSize="2xl" maxWidth="3xl" textAlign="center">
-                        Qi (Chee) is a Feng Shui NFT project with a personalizable background...
-                        {/* Truncated for brevity */}
-                    </Text>
-                </Flex>
-
-                {/* NFT Artwork */}
-                <Box bg="white" p={10}>
-                    <Heading as="h2" size="2xl" mb={6}>NFT Artwork</Heading>
-                    <div style={{display: 'flex', overflow: 'hidden'}}>
-                        {trails.map((style, index) => (
-                            <animated.img
-                                key={artwork[index]}
-                                src={artwork[index]}
-                                alt={artwork[index]}
-                                style={{...style, ...scrolling, width: '40%', height: 'auto'}}
-                            />
-                        ))}
-                    </div>
-                </Box>
-            </Box>
             <Box
                 style={{
                     backgroundImage: `url(${backgroundImage})`,
@@ -121,21 +110,81 @@ const Home = () => {
                     p={8}
                 >
                     <Heading as="h1" size="2xl" fontWeight="bold" mb={4}>
-                        Welcome to Yiqi NFT Marketplace
+                        Yiqi NFT Marketplace
                     </Heading>
 
-                    <Text fontSize="xl" align="center" mb={4}>
-                        Yiqi presents a unique collection of NFTs based on the Chinese Zodiac. Be part of an innovative
+                    <Text fontSize="xl" align="center" mb={4} width={"50%"}>
+                        Yiqi presents a unique collection of 8888 NFTs based on the Chinese Zodiac. Be part of an innovative
                         DeFi ecosystem that aligns your interests and provides benefits for all parties.
                     </Text>
 
-                    <Button colorScheme="purple" size="lg" onClick={() => setIsOpen(!isOpen)}>
+                    <Button colorScheme="blue" size="lg" onClick={() => setIsOpen(!isOpen)}>
                         Learn More
                     </Button>
                 </Flex>
-
-                <HomepageInfoModal isOpen={isOpen} onClose={() => setIsOpen(!isOpen)}/>
+                {/* <HomepageInfoModal isOpen={isOpen} onClose={() => setIsOpen(!isOpen)}/> */}
             </Box>
+            <Box marginRight='10%' marginLeft='10%'>
+                <HomepageInfoModal />
+            </Box>
+            {/* <Box
+                style={{
+                    backgroundImage: `url(${backgroundImage2})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "left",
+                    backgroundRepeat: "no-repeat",
+                    width: "100%",
+                    height: "100vh",
+                    color: "white",
+                }}
+            ></Box>  */}
+            
+            <Box marginRight='10%' marginLeft='10%'>
+                <Slider {...settings} >
+                    {artwork.map((image, index) => {
+                        return (
+                            <div
+                                key={index}>
+                                    <img src={image} alt="nft" style={{
+                                        borderRadius: "2vw",
+                                        margin: "0 50px",
+                                        objectFit: "cover",
+                                        width: "80%",
+                                    }}/>
+                            </div>
+                        )
+                    }
+                    )}
+                </Slider>
+            </Box>
+        
+            {/*NFT Artwork */}
+            {/* <Box bg="white">
+                <Heading as="h2" size="2xl" mb={6}>NFT Artwork</Heading>
+                <div style={{display: 'flex', overflow: 'hidden'}}>
+                    {trails.map((style, index) => (
+                        <animated.img
+                            key={artwork[index]}
+                            src={artwork[index]}
+                            alt={artwork[index]}
+                            style={{...style, ...scrolling, width: '40%', height: 'auto'}}
+                        />
+                    ))}
+                </div>
+            </Box> */}
+
+            {/* <Box
+                style={{
+                    backgroundImage: `url(${backgroundImage2})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "left",
+                    backgroundRepeat: "no-repeat",
+                    width: "100%",
+                    height: "100vh",
+                    color: "white",
+                }}
+            ></Box> */}
+
         </>
     );
 }
