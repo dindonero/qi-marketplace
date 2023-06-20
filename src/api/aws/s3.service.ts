@@ -59,6 +59,7 @@ export const uploadImage = async (buffer: Buffer, key: string, metadata: any): P
         Key: key,
         Body: buffer,
         ContentType: 'image/png',
+        CacheControl: 'no-cache, must-revalidate',
         Metadata: metadata
     };
 
