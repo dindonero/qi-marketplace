@@ -6,6 +6,8 @@ import {useEffect, useState} from "react";
 import networkMapping from "../constants/networkMapping.json";
 import {CHAIN_ID} from "../constants/configHelper";
 import {
+    Stack,
+    Box,
     Button,
     Modal,
     ModalBody,
@@ -23,8 +25,6 @@ import ChangeBackgroundBox from "./ChangeBackgroundBox";
 import PreviewBackgroundChangeModal from "./PreviewBackgroundChangeModal";
 
 interface ChangeBackgroundModalProps {
-    isOpen: boolean;
-    onClose: () => void;
     tokenId: string;
 }
 
@@ -75,32 +75,32 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
 
     return (
         <>
-            <Modal isOpen={props.isOpen} onClose={props.onClose} size="full" scrollBehavior="inside">
-                <ModalOverlay/>
-                <ModalContent>
-                    <ModalHeader>Select a background</ModalHeader>
+            <Stack direction={{base: 'column', md: 'row'}} style={{"overflowY": "scroll", height: "50vh", width: "90%"}}>
+                {isFetchingNfts ? (
+                        <div>Loading...</div>
+                    ) : (
+                        isEmpty(nftsJsonMetadata) ? (
+                            <div>No Backgrounds Owned</div>
+                        ) : (
+                            <div className="flex flex-wrap gap-4">
+                                {Object.keys(nftsJsonMetadata).map((i) => {
+                                    return (
+                                        <ChangeBackgroundBox key={i}
+                                            tokenId={nftsJsonMetadata[i].yiqi_background_id.toString()}
+                                            tokenJsonMetadata={nftsJsonMetadata[i]}
+                                            onSelectBackground={(backTokenId: string | undefined) => setSelectedBackground(backTokenId)}
+                                            selectedBackgroundTokenId={selectedBackground}/>
+                                    )
+                                })}
+                            </div>
+                        )
+                    )
+                }
+            </Stack>
+                    {/* <ModalHeader>Select a background</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
-                        {isFetchingNfts ? (
-                            <div>Loading...</div>
-                        ) : (
-                            isEmpty(nftsJsonMetadata) ? (
-                                <div>No Backgrounds Owned</div>
-                            ) : (
-                                <div className="flex flex-wrap gap-4">
-                                    {Object.keys(nftsJsonMetadata).map((i) => {
-                                        return (
-                                            <ChangeBackgroundBox key={i}
-                                                                 tokenId={nftsJsonMetadata[i].yiqi_background_id.toString()}
-                                                                 tokenJsonMetadata={nftsJsonMetadata[i]}
-                                                                 onSelectBackground={(backTokenId: string | undefined) => setSelectedBackground(backTokenId)}
-                                                                 selectedBackgroundTokenId={selectedBackground}/>
-                                        )
-                                    })}
-                                </div>
-                            )
-                        )
-                        }
+                        
                     </ModalBody>
                     <ModalFooter>
                         <Button isDisabled={!selectedBackground} onClick={onOpen} colorScheme='blue' mr={3}>
@@ -111,7 +111,7 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
                         </Button>
                     </ModalFooter>
                 </ModalContent>
-            </Modal>
+            </Box> */}
             {
                 selectedBackground ?
                     <PreviewBackgroundChangeModal isOpen={isOpen} onClose={onClose} tokenId={props.tokenId}

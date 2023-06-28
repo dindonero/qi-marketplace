@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import BurnModal from "../components/BurnModal";
 import ChangeBackgroundModal from "../components/ChangeBackgroundModal";
-import {Box, Button, useDisclosure, Flex} from "@chakra-ui/react";
+import {Stack, Box, Button, useDisclosure, Flex} from "@chakra-ui/react";
 import OpenseaButton from "../components/OpenseaButton";
 import {requestBackgroundMetadata, requestTransparentURL} from "@/nftMetadata/fetchMetadata";
 import AddressDisplayComponent from "../components/AddressDisplayComponent";
@@ -14,6 +14,7 @@ export default function NFTDisplay() {
 
     const router = useRouter();
     const tokenId = +router.query.tokenId!;
+    const image = router.query.image;
 
     const [isOpenBurnModal, SetisOpenBurnModal] = useState<boolean>(true);
 
@@ -40,84 +41,58 @@ export default function NFTDisplay() {
     }, [router.isReady]);
 
     return backgroundImage ? (
-        <div style={{
-            backgroundImage: `url(${backgroundImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "top",
-            backgroundRepeat: "no-repeat",
-            width: "100%",
-            height: "100vh",
-            position: "fixed",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "white",
-        }}>
-            {transparentImage ? <img src={transparentImage} alt="Foreground" style={{
-                position: "fixed",
-                objectFit: 'contain',
-                height: '100%',
-                width: 'auto',
-                left: 100
+        <Stack spacing={8} direction={{base: 'column', md: 'row'}} alignItems={"center"} justifyContent={"space-evenly"} p='10' >
+            {transparentImage ? <img src={image?.toString()} alt="Foreground" style={{
+                borderRadius: "1vw",
+                objectFit: "contain",
+                width: "40%"
+                // mixBlendMode: "hard-light"
             }}/> : <></>}
-            <Box
-                borderWidth='1px' borderRadius='lg'
-                p='10'
-                position="fixed"
-                bottom={100}
-                right={200}
-                display="flex"
-                flexDirection="column"
-                gap={5}
-                bg='gray.600'
-            >
-                <MetadataDropdown tokenId={tokenId.toString()} />
-            </Box>
-            <Box
-                borderWidth='1px' borderRadius='lg'
-                p='10'
-                position="fixed"
-                top={20}
-                right={200}
-                display="flex"
-                flexDirection="column"
-                gap={5}
-                bg='gray.600'
-            >
-                <h1 style={{ fontSize: "1.3rem" }}>Token ID #{tokenId}</h1>
-                <AddressDisplayComponent address={ownerAddress} />
-                <Flex alignItems={"center"} justifyContent={"space-evenly"} h={16}>
-                    <Button
-                        onClick={() => {
-                            SetisOpenBurnModal(false);
-                            onOpen();
-                        }}
-                        colorScheme="blue"
-                        _hover={{ bg: 'blue.700' }}
-                        marginRight={5}
+            <Stack direction='column' >
+                <Stack spacing={8} direction={{base: 'column', md: 'row'}} >
+                    <Box
+                        borderWidth='1px' borderRadius='lg'
+                        p='10'
+                        display="flex"
+                        flexDirection="column"
+                        gap={5}
+                        bg='gray.600'
+                        style={{color: "white"}}
                     >
-                        Change Background
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            SetisOpenBurnModal(true);
-                            onOpen();
-                        }}
-                        colorScheme="red"
-                        _hover={{ bg: 'red.700' }}
+                        <h1 style={{ fontSize: "1.3rem" }}>Token ID #{tokenId}</h1>
+                        <AddressDisplayComponent address={ownerAddress} />
+                        <Flex alignItems={"center"} justifyContent={"space-evenly"} h={16}>
+                            <Button
+                                onClick={() => {
+                                    SetisOpenBurnModal(true);
+                                    onOpen();
+                                }}
+                                colorScheme="red"
+                                _hover={{ bg: 'red.700' }}
+                                marginRight={5}
+                            >
+                                Burn
+                            </Button>
+                            <OpenseaButton
+                                tokenId={tokenId.toString()}
+                                isBackground={false}
+                            />
+                        </Flex>
+                    </Box>
+                    <BurnModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)} />
+                    <Box
+                        borderWidth='1px' borderRadius='lg'
+                        p='10'
+                        display="flex"
+                        flexDirection="column"
+                        gap={5}
+                        bg='gray.600'
                     >
-                        Burn
-                    </Button>
-                </Flex>
-                <OpenseaButton
-                    tokenId={tokenId.toString()}
-                    isBackground={false}
-                />
-            </Box>
-            {isOpenBurnModal ?
-                <BurnModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)} />
-                : <ChangeBackgroundModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)} />
-            }
-        </div>
+                        <MetadataDropdown tokenId={tokenId.toString()} />
+                    </Box>
+                </Stack>
+                <ChangeBackgroundModal tokenId={String(tokenId)}/>
+            </Stack>
+        </Stack>
     ) : (<></>)
 }
