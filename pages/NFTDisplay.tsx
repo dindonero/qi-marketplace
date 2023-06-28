@@ -73,8 +73,10 @@ export default function NFTDisplay() {
 
 
     const previewBackgroundChange = async (backgroundToken : any, image : any) => {
+        setIsLoadingPreview(true);
         setSelectedBackground(backgroundToken);
         setBackgroundImage(image);
+        setIsLoadingPreview(false);
     }
 
     useEffect(() => {
@@ -176,11 +178,11 @@ export default function NFTDisplay() {
                                 <div className="flex flex-wrap gap-4">
                                     {Object.keys(nftsJsonMetadata).map((i) => {
                                         return (
-                                            <div>
+                                            <div key={i}>
                                                 <Card
                                                     title={`Yiqi #${nftsJsonMetadata[i].yiqi_background_id.toString()}`}
                                                     onClick={() => previewBackgroundChange(nftsJsonMetadata[i].yiqi_background_id.toString(), nftsJsonMetadata[i].image)}
-                                                    isSelected={selectedBackground !== undefined ? selectedBackground === nftsJsonMetadata[i].yiqi_background_id.toString() : false}
+                                                    isSelected={selectedBackground !== null ? selectedBackground === nftsJsonMetadata[i].yiqi_background_id.toString() : false}
                                                 >
                                                     <div className="flex flex-col items-end gap-2 p-2">
                                                         <div>#{nftsJsonMetadata[i].yiqi_background_id.toString()}</div>
