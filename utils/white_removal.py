@@ -3,7 +3,8 @@ import os
 
 
 # Set the directory where the images are stored
-image_dir = "./KARACTERS/"
+image_dir = "../../5000-images/"
+output_dir = image_dir + "results/"
 
 # Loop through each image in the directory
 for filename in os.listdir(image_dir):
@@ -20,6 +21,9 @@ for filename in os.listdir(image_dir):
             else:
                 newData.append(item)
 
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+
         # Create a new image with the transparent background
         img.putdata(newData)
-        img.save(image_dir + "WHITE_REMOVAL/" + filename.split(".")[0] + "_transparent.png", "PNG")
+        img.save(output_dir + filename.split(".")[0] + "_transparent.png", "PNG")
