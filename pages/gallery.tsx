@@ -3,6 +3,7 @@ import {NextPage} from "next";
 import {useMoralis} from "react-moralis";
 import NFTBox from "../components/NFTBox";
 import {requestNFTMetadataBackend} from "@/nftMetadata/fetchMetadata";
+import {Button} from "@chakra-ui/react";
 
 
 const ListAllTokens: NextPage = () => {
@@ -11,10 +12,7 @@ const ListAllTokens: NextPage = () => {
     const [isFetchingTokens, setIsFetchingTokens] = useState<boolean>(false);
     const [currentTokenIndex, setCurrentTokenIndex] = useState(0);
     const tokenFetchChunkSize = 20;  // Define how many tokens to fetch at once
-
-    const isEmpty = (obj: any) => {
-        return Object.keys(obj).length === 0;
-    }
+    const maxTokens = 8888;  // Define the total number of tokens
 
     const fetchTokenMetadata = async (startIndex: number, endIndex: number) => {
         const tokenIds = Array.from({length: endIndex - startIndex}, (_, i) => startIndex + i);
@@ -22,18 +20,17 @@ const ListAllTokens: NextPage = () => {
     }
 
     const fetchTokens = useCallback(async () => {
-        if (!isFetchingTokens) {
-            setIsFetchingTokens(true);
-            const newTokens = await fetchTokenMetadata(currentTokenIndex, currentTokenIndex + tokenFetchChunkSize);
-            setListedTokens((prevState: any) => ({...prevState, ...newTokens}));
-            setCurrentTokenIndex(prev => prev + tokenFetchChunkSize);
-            setIsFetchingTokens(false);
-        }
-    }, [currentTokenIndex, isFetchingTokens]);
+        if (currentTokenIndex >= maxTokens) return;
+        setIsFetchingTokens(true);
+        const newTokens = await fetchTokenMetadata(currentTokenIndex, currentTokenIndex + tokenFetchChunkSize);
+        setListedTokens((prevState: any) => ({...prevState, ...newTokens}));
+        setCurrentTokenIndex(prev => prev + tokenFetchChunkSize);
+        setIsFetchingTokens(false);
+    }, [currentTokenIndex])
 
     useEffect(() => {
         fetchTokens();
-    }, [fetchTokens]);
+    }, []);
 
     useEffect(() => {
         const onScroll = () => {
@@ -51,25 +48,28 @@ const ListAllTokens: NextPage = () => {
     }, [isFetchingTokens, fetchTokens]);
 
     return (
-        <div className="flex flex-wrap">
+        <div>
             {isWeb3Enabled ? (
                 isFetchingTokens ? (
                     <div>Loading...</div>
                 ) : (
-                    isEmpty(listedTokens) ? (
-                        <div>No Tokens Available</div>
-                    ) : (
-                        Object.keys(listedTokens).map((tokenId) => {
-                            return (
-                                <NFTBox
-                                    tokenId={tokenId}
-                                    tokenMetadataPromise={listedTokens[tokenId]}
-                                    key={tokenId}
-                                    isBackground={false}
-                                />
-                            );
-                        })
-                    )
+                    <div>
+                        <div className="flex flex-wrap justify-center">
+                            {Object.keys(listedTokens).map((tokenId) => {
+                                return (
+                                    <NFTBox
+                                        tokenId={tokenId}
+                                        tokenMetadataPromise={listedTokens[tokenId]}
+                                        key={tokenId}
+                                        isBackground={false}
+                                    />
+                                );
+                            })}
+                        </div>
+                        <div className="text-center">
+                            {(currentTokenIndex < maxTokens) ? <Button onClick={fetchTokens} isDisabled={isFetchingTokens}>Load More</Button> : <div>No More Tokens to Display</div>}
+                        </div>
+                    </div>
                 )
             ) : (
                 <div>Web3 Currently Not Enabled</div>

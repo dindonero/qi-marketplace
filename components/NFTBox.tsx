@@ -11,8 +11,12 @@ export default function NFTBox({tokenId, tokenMetadataPromise, isBackground}: an
 
     const handleTokenMetadataPromise = async () => {
         const fetchedTokenMetadata = await tokenMetadataPromise
-        const jsonTokenMetadata = await fetchedTokenMetadata.json()
-        setTokenMetadata(jsonTokenMetadata)
+        try {
+            const jsonTokenMetadata = await fetchedTokenMetadata.json()
+            setTokenMetadata(jsonTokenMetadata)
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     useEffect(() => {
@@ -23,49 +27,37 @@ export default function NFTBox({tokenId, tokenMetadataPromise, isBackground}: an
         router.push(`/NFTDisplay?tokenId=${tokenId}`);
     };
 
-    return (
-        tokenMetadata ? (
-            <div className="p-4">
-                <Card
-                    title={`Yiqi #${tokenId}`}
-                    onClick={!isBackground ? () => navigateToYiQiDisplay(tokenId) : undefined}
-                >
-                    <div className="p-2">
-                        <div className="flex flex-col items-end gap-2">
-                            <div>#{tokenId}</div>
+    return !tokenMetadata || tokenMetadata.image ? (
+        <div className="p-4">
+            <Card
+                title={`Yiqi #${tokenId}`}
+                onClick={!isBackground ? () => navigateToYiQiDisplay(tokenId) : undefined}
+            >
+                <div className="p-2">
+                    <div className="flex flex-col items-end gap-2">
+                        <div>#{tokenId}</div>
+                        {tokenMetadata ?
                             <Image
                                 alt={`Yiqi #${tokenId}`}
                                 loader={() => tokenMetadata.image}
                                 src={tokenMetadata.image}
                                 height="250"
-                                width="250"
-                            />
-                        </div>
-                    </div>
-                </Card>
-                <div className={"p-2"}/>
-            </div>
-        ) : (
-            <div className="p-4">
-                <Card
-                    title={`Yiqi #${tokenId}`}
-                    onClick={!isBackground ? () => navigateToYiQiDisplay(tokenId) : undefined}
-                >
-                    <div className="p-2">
-                        <div className="flex flex-col items-end gap-2">
-                            <div>#{tokenId}</div>
+                                width="250"/>
+                            :
                             <div className={"relative"}>
                                 <div
                                     className="flex items-center justify-center"
-                                    style={{width: 250, height: 250}}
-                                >
+                                    style={{width: 250, height: 250}}>
                                     <Spinner/>
                                 </div>
                             </div>
-                        </div>
+                        }
                     </div>
-                </Card>
-            </div>
-        )
+                </div>
+            </Card>
+            <div className={"p-2"}/>
+        </div>
+    ) : (
+        <></>
     )
 }

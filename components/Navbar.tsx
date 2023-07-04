@@ -43,6 +43,10 @@ const Links = [
     {
         name: "BACKGROUNDS",
         path: "/backgrounds",
+    },
+    {
+        name: "GALLERY",
+        path: "/gallery",
     }
 ];
 
