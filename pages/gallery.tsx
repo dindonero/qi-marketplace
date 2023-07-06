@@ -3,7 +3,7 @@ import {NextPage} from "next";
 import {useMoralis} from "react-moralis";
 import NFTBox from "../components/NFTBox";
 import {requestNFTMetadataBackend} from "@/nftMetadata/fetchMetadata";
-import {Button} from "@chakra-ui/react";
+import {Button, Spinner} from "@chakra-ui/react";
 
 
 const ListAllTokens: NextPage = () => {
@@ -67,7 +67,7 @@ const ListAllTokens: NextPage = () => {
                             })}
                         </div>
                         <div className="text-center">
-                            {(currentTokenIndex < maxTokens) ? <Button onClick={fetchTokens} isDisabled={isFetchingTokens}>Load More</Button> : <div>No More Tokens to Display</div>}
+                            {(currentTokenIndex < maxTokens) ? <Spinner/> : <div>No More Tokens to Display</div>}
                         </div>
                     </div>
                 )

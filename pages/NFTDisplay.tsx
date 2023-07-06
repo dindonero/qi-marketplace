@@ -17,9 +17,10 @@ import networkMapping from "../constants/networkMapping.json";
 import {CHAIN_ID} from "../constants/configHelper";
 import Image from "next/image"
 import {Card} from "web3uikit"
+import {ethers} from "ethers";
 
 export default function NFTDisplay() {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const {isOpen, onOpen, onClose} = useDisclosure();
     // const [isOpenBurnModal, SetisOpenBurnModal] = useState<boolean>(true);
 
     const {isWeb3Enabled, account} = useMoralis()
@@ -30,6 +31,8 @@ export default function NFTDisplay() {
     const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
     const [ownerAddress, setOwnerAddress] = useState<string | undefined>(undefined);
     const [isLoadingPreview, setIsLoadingPreview] = useState<boolean>(true);
+
+    const isOwner = account ? ethers.getAddress(account) === ownerAddress : false;
 
     const loadImages = async () => {
         setIsLoadingPreview(true);
@@ -72,7 +75,7 @@ export default function NFTDisplay() {
     }
 
 
-    const previewBackgroundChange = async (backgroundToken : any, image : any) => {
+    const previewBackgroundChange = async (backgroundToken: any, image: any) => {
         setIsLoadingPreview(true);
         setSelectedBackground(backgroundToken);
         setBackgroundImage(image);
@@ -89,13 +92,9 @@ export default function NFTDisplay() {
             fetchOwnedBackgrounds()
     }, [])
 
-    useEffect(() => {
-        if (!isWeb3Enabled)
-            router.push("/")
-    }, [isWeb3Enabled])
-
     return backgroundImage ? (
-        <Stack spacing={8} direction={{base: 'column', md: 'row'}} alignItems={"center"} justifyContent={"space-evenly"} p='10' marginLeft="5%">
+        <Stack spacing={8} direction={{base: 'column', md: 'row'}} alignItems={"center"} justifyContent={"space-evenly"}
+               p='10' marginLeft="5%">
             {/* {transparentImage ? <img src={image?.toString()} alt="Foreground" style={{
                 borderRadius: "1vw",
                 objectFit: "contain",
@@ -109,22 +108,22 @@ export default function NFTDisplay() {
                         width: "70vh",
                     }}>
                         <img src={backgroundImage!} alt="Background"
-                                style={{position: 'relative', top: 0, borderRadius: "1vw"}}/>
+                             style={{position: 'relative', top: 0, borderRadius: "1vw"}}/>
                         <img src={transparentImage!} alt="Foreground"
-                                style={{position: 'absolute', top: 0}}/>
+                             style={{position: 'absolute', top: 0}}/>
                     </div>
                     {selectedBackground ? <Box py='5'>
                         <ChangeBackgroundButton tokenId={String(tokenId)}
-                            backgroundTokenId={String(selectedBackground)}/>
+                                                backgroundTokenId={String(selectedBackground)}/>
                     </Box> : <></>}
-                    
+
                 </Box>
-                    
-                ) : (
-                    <div>Loading...</div>
-                )
+
+            ) : (
+                <div>Loading...</div>
+            )
             }
-            {!isLoadingPreview ? (<Stack direction='column' >
+            {!isLoadingPreview ? (<Stack direction='column'>
                 <Stack spacing={8} direction={{base: 'column', md: 'row'}} style={{color: "white"}}>
                     <Box
                         borderWidth='1px' borderRadius='lg'
@@ -134,25 +133,25 @@ export default function NFTDisplay() {
                         gap={5}
                         bg='gray.600'
                     >
-                        <h1 style={{ fontSize: "1.3rem" }}>Token ID #{tokenId}</h1>
-                        <AddressDisplayComponent address={ownerAddress} />
+                        <h1 style={{fontSize: "1.3rem"}}>Token ID #{tokenId}</h1>
+                        <AddressDisplayComponent address={ownerAddress}/>
                         <ButtonGroup gap='5'>
-                            <Button
+                            {isOwner ? <Button
                                 onClick={() => {
                                     onOpen();
                                 }}
                                 colorScheme="red"
-                                _hover={{ bg: 'red.700' }}
+                                _hover={{bg: 'red.700'}}
                             >
                                 Burn
-                            </Button>
+                            </Button> : <></>}
                             <OpenseaButton
                                 tokenId={tokenId.toString()}
                                 isBackground={false}
                             />
                         </ButtonGroup>
                     </Box>
-                    <BurnModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)} />
+                    <BurnModal isOpen={isOpen} onClose={onClose} tokenId={String(tokenId)}/>
                     <Box
                         borderWidth='1px' borderRadius='lg'
                         p='10'
@@ -161,11 +160,13 @@ export default function NFTDisplay() {
                         gap={5}
                         bg='gray.600'
                     >
-                        <MetadataDropdown tokenId={tokenId.toString()} />
+                        <MetadataDropdown tokenId={tokenId.toString()}/>
                     </Box>
                 </Stack>
-                <Stack direction={{base: 'column', md: 'row'}} style={{"overflowY": "scroll", height: "50vh", width: "90%"}}>
-                    {isFetchingNfts ? (
+                {isOwner ?
+                    <Stack direction={{base: 'column', md: 'row'}}
+                           style={{"overflowY": "scroll", height: "50vh", width: "90%"}}>
+                        {isFetchingNfts ? (
                             <div>Loading...</div>
                         ) : (
                             isEmpty(nftsJsonMetadata) ? (
@@ -174,37 +175,37 @@ export default function NFTDisplay() {
                                 <Box
                                     py='5'
                                 >
-                                <h1 style={{ fontSize: "1.2rem" }}>Select Background: </h1><br></br>
-                                <div className="flex flex-wrap gap-4">
-                                    {Object.keys(nftsJsonMetadata).map((i) => {
-                                        return (
-                                            <div key={i}>
-                                                <Card
-                                                    title={`Yiqi #${nftsJsonMetadata[i].yiqi_background_id.toString()}`}
-                                                    onClick={() => previewBackgroundChange(nftsJsonMetadata[i].yiqi_background_id.toString(), nftsJsonMetadata[i].image)}
-                                                    isSelected={selectedBackground !== null ? selectedBackground === nftsJsonMetadata[i].yiqi_background_id.toString() : false}
-                                                >
-                                                    <div className="flex flex-col items-end gap-2 p-2">
-                                                        <div>#{nftsJsonMetadata[i].yiqi_background_id.toString()}</div>
-                                                        <Image
-                                                            alt={`Background #${nftsJsonMetadata[i].yiqi_background_id.toString()}`}
-                                                            loader={() => nftsJsonMetadata[i].image}
-                                                            src={nftsJsonMetadata[i].image}
-                                                            height="250"
-                                                            width="250"
-                                                        />
-                                                    </div>
-                                                </Card>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            </Box>
+                                    <h1 style={{fontSize: "1.2rem"}}>Select Background: </h1><br></br>
+                                    <div className="flex flex-wrap gap-4">
+                                        {Object.keys(nftsJsonMetadata).map((i) => {
+                                            return (
+                                                <div key={i}>
+                                                    <Card
+                                                        title={`Yiqi #${nftsJsonMetadata[i].yiqi_background_id.toString()}`}
+                                                        onClick={() => previewBackgroundChange(nftsJsonMetadata[i].yiqi_background_id.toString(), nftsJsonMetadata[i].image)}
+                                                        isSelected={selectedBackground !== null ? selectedBackground === nftsJsonMetadata[i].yiqi_background_id.toString() : false}
+                                                    >
+                                                        <div className="flex flex-col items-end gap-2 p-2">
+                                                            <div>#{nftsJsonMetadata[i].yiqi_background_id.toString()}</div>
+                                                            <Image
+                                                                alt={`Background #${nftsJsonMetadata[i].yiqi_background_id.toString()}`}
+                                                                loader={() => nftsJsonMetadata[i].image}
+                                                                src={nftsJsonMetadata[i].image}
+                                                                height="250"
+                                                                width="250"
+                                                            />
+                                                        </div>
+                                                    </Card>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </Box>
                             )
                         )
-                    }
-                    </Stack>
-                </Stack>) : <></>}
+                        }
+                    </Stack> : <></>}
+            </Stack>) : <></>}
         </Stack>
     ) : (<></>)
 }

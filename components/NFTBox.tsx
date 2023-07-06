@@ -11,12 +11,8 @@ export default function NFTBox({tokenId, tokenMetadataPromise, isBackground}: an
 
     const handleTokenMetadataPromise = async () => {
         const fetchedTokenMetadata = await tokenMetadataPromise
-        try {
-            const jsonTokenMetadata = await fetchedTokenMetadata.json()
-            setTokenMetadata(jsonTokenMetadata)
-        } catch (e) {
-            console.log(e)
-        }
+        const jsonTokenMetadata = await fetchedTokenMetadata.json()
+        setTokenMetadata(jsonTokenMetadata)
     }
 
     useEffect(() => {

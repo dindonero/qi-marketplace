@@ -32,8 +32,6 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
 
     const {isWeb3Enabled, account} = useMoralis()
 
-    const router = useRouter()
-
     const {isOpen, onOpen, onClose} = useDisclosure();
 
     const [nftsJsonMetadata, setNftsJsonMetadata] = useState<any>({})
@@ -68,10 +66,6 @@ const ChangeBackgroundModal = (props: ChangeBackgroundModalProps) => {
             fetchOwnedBackgrounds()
     }, [])
 
-    useEffect(() => {
-        if (!isWeb3Enabled)
-            router.push("/")
-    }, [isWeb3Enabled])
 
     return (
         <>

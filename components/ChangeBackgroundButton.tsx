@@ -9,9 +9,10 @@ interface ChangeBackgroundButtonProps {
     tokenId: string;
     backgroundTokenId: string | undefined;
 }
+
 export const ChangeBackgroundButton = (props: ChangeBackgroundButtonProps) => {
 
-    const { isWeb3Enabled, chainId, account} = useMoralis();
+    const {isWeb3Enabled, chainId, account} = useMoralis();
     const dispatch = useNotification();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -37,12 +38,19 @@ export const ChangeBackgroundButton = (props: ChangeBackgroundButtonProps) => {
                 body: JSON.stringify(body)
             })
             const result = await response.json();
-            dispatch({
-                type: "success",
-                message: result.status,
-                title: "Change Background",
-                position: "topR"
-            })
+            result.status ?
+                dispatch({
+                    type: "success",
+                    message: result.status,
+                    title: "Change Background",
+                    position: "topR"
+                }) :
+                dispatch({
+                    type: "error",
+                    message: result.error,
+                    title: "Change Background Failed",
+                    position: "topR"
+                })
         } catch (error: any) {
             dispatch({
                 type: "error",
@@ -55,7 +63,8 @@ export const ChangeBackgroundButton = (props: ChangeBackgroundButtonProps) => {
     }
 
     return (
-        <Button onClick={handleChangeBackground} isDisabled={!isWeb3Enabled || !props.backgroundTokenId} isLoading={isLoading} colorScheme="green" rounded="md" size="md">
+        <Button onClick={handleChangeBackground} isDisabled={!isWeb3Enabled || !props.backgroundTokenId}
+                isLoading={isLoading} colorScheme="green" rounded="md" size="md">
             Change Background
         </Button>
     )
