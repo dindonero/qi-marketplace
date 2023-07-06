@@ -5,9 +5,12 @@ import os
 import glob
 
 # Path where the images are located
-input_path = '../../5000-images/*'
+input_path = '../../5000-images/original/*'
 # Output Path
-output_path = '../../5000-images/results/'
+output_path = '../../5000-images/transparent/'
+
+i = 0
+j = 0
 
 for filename in glob.glob(input_path):
     # Open the image file.
@@ -31,9 +34,13 @@ for filename in glob.glob(input_path):
     # Make the image's white area transparent by applying the mask
     img[mask==255] = (255, 255, 255, 0)
 
+    if i != 0 and i % 1000 == 0:
+        j += 1
+    i += 1
+
     # Save the output
     output_filename = os.path.join(output_path, os.path.basename(filename))
-    cv2.imwrite(output_path + os.path.basename(filename).split('.')[0] + '.png', img)
+    cv2.imwrite(output_path + f'{j}/' + os.path.basename(filename).split('.')[0] + '.png', img)
 
 """
     import cv2

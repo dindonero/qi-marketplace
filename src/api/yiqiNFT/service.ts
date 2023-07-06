@@ -55,7 +55,7 @@ export const mintYiqiNFT = async (tokenId: number) => {
 
     const mainImageObj: S3Image = await getRandomImageFromS3Bucket(QI_TRANSPARENT_BUCKET, usedBaseImages)
     let backgroundImageObj: S3Image
-    if (await backgroundExists(tokenId))
+    if (await backgroundExists(backgroundTokenId))
         backgroundImageObj = await getImageFromS3Bucket(QI_BACKGROUND_BUCKET, (await getBackgroundByTokenId(backgroundTokenId))!.fileName.S!)
     else
         backgroundImageObj = await getRandomImageFromS3Bucket(QI_BACKGROUND_BUCKET)
