@@ -22,11 +22,7 @@ export const getAllYiqiBaseFiles = async () => {
 
     const response = await ddbClient.send(command);
 
-    if (!response.Items) {
-        throw new Error("No items found");
-    }
-
-    return response.Items.map((item) => item[fileNameAttribute].S!);
+    return response.Items?.map((item) => item[fileNameAttribute].S!);
 }
 
 export const storeYiqiNFT = async (tokenId: number, fileName: string, backgroundTokenId: number) => {
