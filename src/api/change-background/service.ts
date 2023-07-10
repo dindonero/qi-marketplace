@@ -2,7 +2,7 @@ import {getYiqiBaseImage} from "@/api/yiqiNFT/service";
 import {getBackgroundImage} from "@/api/yiqiBackground/service";
 import {imageMerge} from "@/api/image-merge/service";
 import {uploadImage} from "@/api/aws/s3.service";
-import {updateYiqiNFTBackground} from "@/api/yiqiNFT/db.service";
+import {updateYiqiNFTBackgroundInDb} from "@/api/yiqiNFT/db.service";
 
 
 export const changeBackground = async (tokenId: number, backgroundTokenId: number) => {
@@ -14,7 +14,8 @@ export const changeBackground = async (tokenId: number, backgroundTokenId: numbe
 
     const nftUrl = await uploadImage(yiqiImageBuffer, `${tokenId}.png`, {...yiqiBaseImage.metadata, ...backgroundBaseImage.metadata});
 
-    await updateYiqiNFTBackground(tokenId, backgroundTokenId)
+    await updateYiqiNFTBackgroundInDb(tokenId, backgroundTokenId)
 
-    console.log(nftUrl)
+    console.log(`NFT ${tokenId} background changed to ${backgroundTokenId}`)
+    return `Successfully set QiCity #${tokenId} background to #${backgroundTokenId}`
 }

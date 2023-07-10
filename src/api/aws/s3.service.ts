@@ -18,7 +18,8 @@ export const getImageFromS3Bucket = async (bucketName: string, key: string): Pro
 
     return {key: key, body: s3Object.Body as Buffer, metadata: s3Object.Metadata!};
 }
-export const getRandomImageFromS3Bucket = async (bucketName: string, usedImageKeys?: string[]): Promise<S3Image> => {
+
+export const getRandomKeyFromS3Bucket = async (bucketName: string, usedImageKeys?: string[]): Promise<string> => {
     const s3 = new AWS.S3();
 
     const listParams = {
@@ -40,15 +41,7 @@ export const getRandomImageFromS3Bucket = async (bucketName: string, usedImageKe
     }
 
     const randomIndex = Math.floor(Math.random() * s3ObjectList.Contents.length);
-    const randomObjectKey = s3ObjectList.Contents[randomIndex].Key!;
-    const getObjectParams = {
-        Bucket: bucketName,
-        Key: randomObjectKey
-    };
-
-    const s3Object = await s3.getObject(getObjectParams).promise();
-
-    return {key: randomObjectKey, body: s3Object.Body as Buffer, metadata: s3Object.Metadata!};
+    return s3ObjectList.Contents[randomIndex].Key!;
 }
 
 export const uploadImage = async (buffer: Buffer, key: string, metadata: any): Promise<string> => {
@@ -89,7 +82,7 @@ export const getImageMetadata = async (bucketName: string, keyName: string) => {
     }
 }
 
-export const imageExists = async (bucketName: string, keyName: string): Promise<boolean> => {
+export const imageExistsInS3 = async (bucketName: string, keyName: string): Promise<boolean> => {
     const s3 = new AWS.S3();
 
     const params = {
