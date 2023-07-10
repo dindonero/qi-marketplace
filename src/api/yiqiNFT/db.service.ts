@@ -29,13 +29,22 @@ export const storeYiqiNFTInDb = async (tokenId: number, fileName: string, backgr
     const params = {
         TableName: NFT_TABLE_NAME,
         Item: {
+            ["fileName"]: {S: fileName}, // fileName is now the primary key
             ["tokenId"]: {N: tokenId.toString()},
-            ["fileName"]: {S: fileName},
             ["backgroundTokenId"]: {N: backgroundTokenId.toString()},
         },
+        ConditionExpression: "attribute_not_exists(fileName)" // Only succeed if fileName doesn't exist
     };
     const command = new PutItemCommand(params);
-    await ddbClient.send(command);
+    try {
+        await ddbClient.send(command);
+        return true;
+    } catch (error: any) {
+        if (error.name === "ConditionalCheckFailedException") {
+            return false; // Return false if filename already exists
+        }
+        throw error;
+    }
 }
 
 export const updateYiqiNFTBackgroundInDb = async (tokenId: number, backgroundTokenId: number) => {

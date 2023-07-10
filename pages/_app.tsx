@@ -7,23 +7,25 @@ import Navbar from "../components/Navbar"
 import {AppContextProvider} from "../contexts/AppConfig";
 import {MintButton} from "../components/MintButton";
 import Link from "next/link";
-import { ChakraProvider } from "@chakra-ui/react";
+import {ChakraProvider} from "@chakra-ui/react";
 
 function App({Component, pageProps}: AppProps) {
     return (
-        <div>
+        <>
             <title>QiCity</title>
+            <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+
             <MoralisProvider initializeOnMount={false}>
-                <AppContextProvider >
+                <AppContextProvider>
                     <NotificationProvider>
-                        <ChakraProvider >
+                        <ChakraProvider>
                             <Navbar/>
                             <Component {...pageProps}/>
                         </ChakraProvider>
                     </NotificationProvider>
                 </AppContextProvider>
             </MoralisProvider>
-        </div>
+        </>
     )
 }
 

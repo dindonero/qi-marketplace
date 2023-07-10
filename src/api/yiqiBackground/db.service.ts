@@ -2,7 +2,7 @@ import {BACKGROUND_TABLE_NAME} from "@/api/aws/aws-helper-config";
 import {GetItemCommand, PutItemCommand} from "@aws-sdk/client-dynamodb";
 import {ddbClient} from "@/api/aws/dynamoDB.config";
 
-export const getBackgroundByTokenId = async (tokenId: number) => {
+export const getBackgroundByTokenIdFromDb = async (tokenId: number) => {
 
     const params = {
         TableName: BACKGROUND_TABLE_NAME,
@@ -15,7 +15,7 @@ export const getBackgroundByTokenId = async (tokenId: number) => {
     return result.Item;
 }
 
-export const storeBackground = async (tokenId: number, fileName: string) => {
+export const storeBackgroundInDb = async (tokenId: number, fileName: string) => {
     const params = {
         TableName: BACKGROUND_TABLE_NAME,
         Item: {
@@ -27,7 +27,7 @@ export const storeBackground = async (tokenId: number, fileName: string) => {
     await ddbClient.send(command);
 }
 
-export const backgroundExists = async (tokenId: number) => {
+export const backgroundExistsInDb = async (tokenId: number) => {
     const params = {
         TableName: BACKGROUND_TABLE_NAME,
         Key: {
