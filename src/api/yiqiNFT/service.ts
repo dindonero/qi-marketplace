@@ -2,12 +2,17 @@ import {imageMerge} from "@/api/image-merge/service";
 import {
     getImageFromS3Bucket,
     getImageMetadata,
-    getRandomImageFromS3Bucket,
+    getRandomKeyFromS3Bucket,
+    imageExistsInS3,
     uploadImage
 } from "@/api/aws/s3.service";
 import {QI_BACKGROUND_BUCKET, QI_NFT_BUCKET, QI_TRANSPARENT_BUCKET} from "@/api/aws/aws-helper-config";
-import {S3Image} from "@/api/aws/S3Image.type";
-import {getAllYiqiBaseFiles, getYiqiNFTByTokenId, storeYiqiNFT, yiqiNFTExists} from "@/api/yiqiNFT/db.service";
+import {
+    getAllYiqiBaseFilesFromDb,
+    getYiqiNFTByTokenIdFromDb,
+    storeYiqiNFTInDb,
+    yiqiNFTExistsInDb
+} from "@/api/yiqiNFT/db.service";
 import {backgroundExists, getBackgroundByTokenId, storeBackground} from "@/api/yiqiBackground/db.service";
 import {getBackgroundTokenIdFromYiqiNFT} from "@/api/provider/service";
 import {Mutex} from "async-mutex";
@@ -17,7 +22,7 @@ const mutex = new Mutex();
 export const getYiqiNFT = async (id: number): Promise<any> => {
 
     // if image is not uploaded on s3, generate nft image and upload it
-    if (!(await yiqiNFTExists(id)))
+    if (!(await imageExistsInS3(QI_NFT_BUCKET, `${id}.png`)))
         await mintYiqiNFT(id)
 
     // return nft json data
@@ -30,7 +35,7 @@ export const getYiqiNFT = async (id: number): Promise<any> => {
 
 export const getYiqiBaseImage = async (tokenId: number) => {
 
-    const yiqiNFT = await getYiqiNFTByTokenId(tokenId)
+    const yiqiNFT = await getYiqiNFTByTokenIdFromDb(tokenId)
     const baseImageKey = yiqiNFT.fileName.S!
 
     return getImageFromS3Bucket(QI_TRANSPARENT_BUCKET, baseImageKey)
@@ -38,7 +43,7 @@ export const getYiqiBaseImage = async (tokenId: number) => {
 
 export const getTransparentURL = async (tokenId: number) => {
 
-    const yiqiNFT = await getYiqiNFTByTokenId(tokenId)
+    const yiqiNFT = await getYiqiNFTByTokenIdFromDb(tokenId)
     const baseImageKey = yiqiNFT.fileName.S!
 
     const backgroundFilenameRec = await getBackgroundByTokenId(+yiqiNFT.backgroundTokenId.N!)
@@ -52,35 +57,43 @@ export const getTransparentURL = async (tokenId: number) => {
 
 export const mintYiqiNFT = async (tokenId: number) => {
 
-    const release = await mutex.acquire();
+    const backgroundTokenId = await getBackgroundTokenIdFromYiqiNFT(tokenId)
 
-    try {
+    // if transparent filename is not stored in db, generate it
+    let transparentImageKey: string
+    if (await yiqiNFTExistsInDb(tokenId)) {
+        transparentImageKey = (await getYiqiNFTByTokenIdFromDb(tokenId)).fileName.S!
+    } else {
+        const release = await mutex.acquire();
+        try {
+            const usedBaseImages = await getAllYiqiBaseFilesFromDb()
 
-        const usedBaseImages = await getAllYiqiBaseFiles()
+            transparentImageKey = await getRandomKeyFromS3Bucket(QI_TRANSPARENT_BUCKET, usedBaseImages)
 
-        const backgroundTokenId = await getBackgroundTokenIdFromYiqiNFT(tokenId)
-
-        const mainImageObj: S3Image = await getRandomImageFromS3Bucket(QI_TRANSPARENT_BUCKET, usedBaseImages)
-        let backgroundImageObj: S3Image
-        if (await backgroundExists(backgroundTokenId))
-            backgroundImageObj = await getImageFromS3Bucket(QI_BACKGROUND_BUCKET, (await getBackgroundByTokenId(backgroundTokenId))!.fileName.S!)
-        else
-            backgroundImageObj = await getRandomImageFromS3Bucket(QI_BACKGROUND_BUCKET)
-
-
-        await storeYiqiNFT(tokenId, mainImageObj.key, backgroundTokenId)
-        await storeBackground(backgroundTokenId, backgroundImageObj.key)
-
-        const yiqiImageBuffer = await imageMerge(mainImageObj, backgroundImageObj, tokenId)
-        const nftUrl = await uploadImage(yiqiImageBuffer, `${tokenId}.png`, {...mainImageObj.metadata, ...backgroundImageObj.metadata});
-
-        release()
-
-        console.log(`NFT ${tokenId} minted at ${nftUrl}`)
-        return `Successfully minted QiCity ${tokenId}`
-    } catch (e) {
-        release()
-        console.error(e)
-        throw e
+            await storeYiqiNFTInDb(tokenId, transparentImageKey, backgroundTokenId)
+            release()
+        } catch (e) {
+            release()
+            throw e
+        }
     }
+
+    // if background filename is not stored in db, generate it
+    let backgroundImageKey: string
+    if (await backgroundExists(backgroundTokenId)) {
+        backgroundImageKey = (await getBackgroundByTokenId(backgroundTokenId))!.fileName.S!
+    } else {
+        backgroundImageKey = await getRandomKeyFromS3Bucket(QI_BACKGROUND_BUCKET)
+        await storeBackground(backgroundTokenId, backgroundImageKey)
+    }
+
+    // merge images and upload to s3
+    const tranparentImageObj = await getImageFromS3Bucket(QI_TRANSPARENT_BUCKET, transparentImageKey)
+    const backgroundImageObj = await getImageFromS3Bucket(QI_BACKGROUND_BUCKET, backgroundImageKey)
+    const yiqiImageBuffer = await imageMerge(tranparentImageObj, backgroundImageObj, tokenId)
+
+    const nftUrl = await uploadImage(yiqiImageBuffer, `${tokenId}.png`, {...tranparentImageObj.metadata, ...backgroundImageObj.metadata});
+
+    console.log(`NFT ${tokenId} minted at ${nftUrl}`)
+    return `Successfully minted QiCity ${tokenId}`
 }

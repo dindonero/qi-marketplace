@@ -20,9 +20,9 @@ export default async function index(
         await verifyYiqiOwnership(tokenId, address);
         await verifyYiqiBackgroundOwnership(backgroundTokenId, address);
 
-        await changeBackground(tokenId, backgroundTokenId);
+        const response = await changeBackground(tokenId, backgroundTokenId);
 
-        res.status(200).send({status: "Success"});
+        res.status(200).send({status: response});
     } catch (error: any) {
         console.log(error);
         res.status(400).json({error: error.message});
