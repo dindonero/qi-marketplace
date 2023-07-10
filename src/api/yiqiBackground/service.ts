@@ -1,25 +1,25 @@
 import {S3Image} from "@/api/aws/S3Image.type";
-import {getImageFromS3Bucket, getImageMetadata, getRandomImageFromS3Bucket} from "@/api/aws/s3.service";
+import {getImageFromS3Bucket, getImageMetadata, getRandomKeyFromS3Bucket} from "@/api/aws/s3.service";
 import {QI_BACKGROUND_BUCKET} from "@/api/aws/aws-helper-config";
 import {backgroundExists, getBackgroundByTokenId, storeBackground} from "@/api/yiqiBackground/db.service";
 
 
 export const getYiqiBackground = async (tokenId: number) => {
 
-    let backgroundKey
+    let backgroundKey: string
 
     if (await backgroundExists(tokenId)) {
         const backgroundObj = await getBackgroundByTokenId(tokenId)
-        backgroundKey = backgroundObj!.fileName.S
+        backgroundKey = backgroundObj!.fileName.S!
     } else {
-        const backgroundImageObj: S3Image = await getRandomImageFromS3Bucket(QI_BACKGROUND_BUCKET)
+        const backgroundKey = await getRandomKeyFromS3Bucket(QI_BACKGROUND_BUCKET)
+        const backgroundImageObj: S3Image = await getImageFromS3Bucket(QI_BACKGROUND_BUCKET, backgroundKey)
         await storeBackground(tokenId, backgroundImageObj.key)
-        backgroundKey = backgroundImageObj.key
     }
 
     return {
         yiqi_background_id: tokenId,
-        image: `https://${QI_BACKGROUND_BUCKET}.s3.amazonaws.com/${backgroundKey}`,
+        image: `https://${QI_BACKGROUND_BUCKET}.s3.amazonaws.com/${backgroundKey!}`,
         attributes: await getImageMetadata(QI_BACKGROUND_BUCKET, backgroundKey!)
     }
 
