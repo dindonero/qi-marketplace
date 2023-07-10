@@ -13,8 +13,6 @@ const Home = () => {
     const backgroundImage2 = "/images/home10.jpg";
     const [artwork, setArtwork] = useState<string[]>([]);
 
-    const [isOpen, setIsOpen] = useState(false);
-
     const handleClick = () => {
         ref.current?.scrollIntoView({behavior: 'smooth', block: 'start'});
     };

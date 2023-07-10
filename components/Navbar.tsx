@@ -26,6 +26,7 @@ import Link from "next/link";
 // const Links = ["Dashboard", "Projects", "Team"];
 import navStyles from "./navbar.module.css";
 import {integer} from "aws-sdk/clients/frauddetector";
+import Image from "next/image";
 
 const Links = [
     {
@@ -91,7 +92,9 @@ export default function Navbar() {
                     />
                     <Flex alignItems={"center"}>
                         {/* <img src="./images/logo2.png" alt="logo" width="10%"/> */}
-                        <Box color="rgb(46, 125, 175)">Logo</Box>
+                        <Box color="rgb(46, 125, 175)">
+                            <img src="/favicon.ico" alt="logo" width="80" height="80"/>
+                        </Box>
                     </Flex>
                     <HStack
                         as={"nav"}

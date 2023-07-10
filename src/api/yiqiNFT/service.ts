@@ -13,11 +13,9 @@ import {
     storeYiqiNFTInDb,
     yiqiNFTExistsInDb
 } from "@/api/yiqiNFT/db.service";
-import {backgroundExists, getBackgroundByTokenId, storeBackground} from "@/api/yiqiBackground/db.service";
+import {backgroundExistsInDb, getBackgroundByTokenIdFromDb, storeBackgroundInDb} from "@/api/yiqiBackground/db.service";
 import {getBackgroundTokenIdFromYiqiNFT} from "@/api/provider/service";
-import {Mutex} from "async-mutex";
 
-const mutex = new Mutex();
 
 export const getYiqiNFT = async (id: number): Promise<any> => {
 
@@ -46,7 +44,7 @@ export const getTransparentURL = async (tokenId: number) => {
     const yiqiNFT = await getYiqiNFTByTokenIdFromDb(tokenId)
     const baseImageKey = yiqiNFT.fileName.S!
 
-    const backgroundFilenameRec = await getBackgroundByTokenId(+yiqiNFT.backgroundTokenId.N!)
+    const backgroundFilenameRec = await getBackgroundByTokenIdFromDb(+yiqiNFT.backgroundTokenId.N!)
     const backgroundFilename = backgroundFilenameRec!.fileName.S!
 
     return {
@@ -60,31 +58,28 @@ export const mintYiqiNFT = async (tokenId: number) => {
     const backgroundTokenId = await getBackgroundTokenIdFromYiqiNFT(tokenId)
 
     // if transparent filename is not stored in db, generate it
-    let transparentImageKey: string
+    let transparentImageKey: string = ""
     if (await yiqiNFTExistsInDb(tokenId)) {
         transparentImageKey = (await getYiqiNFTByTokenIdFromDb(tokenId)).fileName.S!
     } else {
-        const release = await mutex.acquire();
-        try {
+        // hack for concurrent requests that mint the same filename
+        let gotUniqueFilename = false
+        while (!gotUniqueFilename) {
             const usedBaseImages = await getAllYiqiBaseFilesFromDb()
 
             transparentImageKey = await getRandomKeyFromS3Bucket(QI_TRANSPARENT_BUCKET, usedBaseImages)
 
-            await storeYiqiNFTInDb(tokenId, transparentImageKey, backgroundTokenId)
-            release()
-        } catch (e) {
-            release()
-            throw e
+            gotUniqueFilename = await storeYiqiNFTInDb(tokenId, transparentImageKey, backgroundTokenId)
         }
     }
 
     // if background filename is not stored in db, generate it
     let backgroundImageKey: string
-    if (await backgroundExists(backgroundTokenId)) {
-        backgroundImageKey = (await getBackgroundByTokenId(backgroundTokenId))!.fileName.S!
+    if (await backgroundExistsInDb(backgroundTokenId)) {
+        backgroundImageKey = (await getBackgroundByTokenIdFromDb(backgroundTokenId))!.fileName.S!
     } else {
         backgroundImageKey = await getRandomKeyFromS3Bucket(QI_BACKGROUND_BUCKET)
-        await storeBackground(backgroundTokenId, backgroundImageKey)
+        await storeBackgroundInDb(backgroundTokenId, backgroundImageKey)
     }
 
     // merge images and upload to s3
