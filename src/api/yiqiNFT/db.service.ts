@@ -1,19 +1,22 @@
-import {NFT_TABLE_NAME} from "@/api/aws/aws-helper-config";
-import {GetItemCommand, PutItemCommand, ScanCommand, UpdateItemCommand} from "@aws-sdk/client-dynamodb";
+import {PutItemCommand, ScanCommand} from "@aws-sdk/client-dynamodb";
 import {ddbClient} from "@/api/aws/dynamoDB.config";
+import {NFT_TABLE_NAME} from "@/api/aws/aws-helper-config";
 
 export const getYiqiNFTByTokenIdFromDb = async (tokenId: number) => {
-
     const params = {
         TableName: NFT_TABLE_NAME,
-        Key: {
-            ["tokenId"]: {N: tokenId.toString()}
+        FilterExpression: "#tokenId = :tokenId",
+        ExpressionAttributeNames: {
+            "#tokenId": "tokenId",
+        },
+        ExpressionAttributeValues: {
+            ":tokenId": { N: tokenId.toString() }
         }
     };
-    const command = new GetItemCommand(params)
-    const result = await ddbClient.send(command)
 
-    return result.Item!;
+    const command = new ScanCommand(params);
+    const result = await ddbClient.send(command);
+    return result.Items!.at(0)!;
 }
 
 export const getAllYiqiBaseFilesFromDb = async () => {
@@ -25,15 +28,15 @@ export const getAllYiqiBaseFilesFromDb = async () => {
     return response.Items?.map((item) => item[fileNameAttribute].S!);
 }
 
-export const storeYiqiNFTInDb = async (tokenId: number, fileName: string, backgroundTokenId: number) => {
+export const storeYiqiNFTInDb = async (tokenId: number, filename: string, backgroundTokenId: number) => {
     const params = {
         TableName: NFT_TABLE_NAME,
         Item: {
-            ["fileName"]: {S: fileName}, // fileName is now the primary key
+            ["filename"]: {S: filename},
             ["tokenId"]: {N: tokenId.toString()},
             ["backgroundTokenId"]: {N: backgroundTokenId.toString()},
         },
-        ConditionExpression: "attribute_not_exists(fileName)" // Only succeed if fileName doesn't exist
+        ConditionExpression: "attribute_not_exists(filename)" // Only succeed if fileName doesn't exist
     };
     const command = new PutItemCommand(params);
     try {
@@ -50,26 +53,32 @@ export const storeYiqiNFTInDb = async (tokenId: number, fileName: string, backgr
 export const updateYiqiNFTBackgroundInDb = async (tokenId: number, backgroundTokenId: number) => {
     const params = {
         TableName: NFT_TABLE_NAME,
-        Key: {
-            "tokenId": {N: tokenId.toString()},
+        FilterExpression: "#tokenId = :tokenId",
+        ExpressionAttributeNames: {
+            "#tokenId": "tokenId",
+        },
+        ExpressionAttributeValues: {
+            ":tokenId": { N: tokenId.toString() },
+            ":b": {N: backgroundTokenId.toString()},
         },
         UpdateExpression: "SET backgroundTokenId = :b",
-        ExpressionAttributeValues: {
-            ":b": {N: backgroundTokenId.toString()},
-        }
     };
-    const command = new UpdateItemCommand(params);
+    const command = new ScanCommand(params);
     await ddbClient.send(command);
 }
 
 export const yiqiNFTExistsInDb = async (tokenId: number) => {
     const params = {
         TableName: NFT_TABLE_NAME,
-        Key: {
-            ["tokenId"]: {N: tokenId.toString()},
+        FilterExpression: "#tokenId = :tokenId",
+        ExpressionAttributeNames: {
+            "#tokenId": "tokenId",
+        },
+        ExpressionAttributeValues: {
+            ":tokenId": { N: tokenId.toString() },
         },
     };
-    const command = new GetItemCommand(params);
+    const command = new ScanCommand(params);
     const result = await ddbClient.send(command);
-    return Boolean(result.Item);
+    return result.Items!.length !== 0;
 }
