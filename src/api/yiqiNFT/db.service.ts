@@ -36,7 +36,7 @@ export const storeYiqiNFTInDb = async (tokenId: number, filename: string, backgr
             ["tokenId"]: {N: tokenId.toString()},
             ["backgroundTokenId"]: {N: backgroundTokenId.toString()},
         },
-        ConditionExpression: "attribute_not_exists(filename)" // Only succeed if fileName doesn't exist
+        ConditionExpression: "attribute_not_exists(filename)" // Only succeed if filename doesn't exist
     };
     const command = new PutItemCommand(params);
     try {

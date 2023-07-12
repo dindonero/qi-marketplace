@@ -10,7 +10,7 @@ export const getYiqiBackground = async (tokenId: number) => {
 
     if (await backgroundExistsInDb(tokenId)) {
         const backgroundObj = await getBackgroundByTokenIdFromDb(tokenId)
-        backgroundKey = backgroundObj!.fileName.S!
+        backgroundKey = backgroundObj!.filename.S!
     } else {
         backgroundKey = await getRandomKeyFromS3Bucket(QI_BACKGROUND_BUCKET)
         const backgroundImageObj: S3Image = await getImageFromS3Bucket(QI_BACKGROUND_BUCKET, backgroundKey)
@@ -28,7 +28,7 @@ export const getYiqiBackground = async (tokenId: number) => {
 export const getBackgroundImage = async (tokenId: number) => {
 
     const backgroundObj = await getBackgroundByTokenIdFromDb(tokenId)
-    const backgroundKey = backgroundObj!.fileName.S!
+    const backgroundKey = backgroundObj!.filename.S!
 
     return getImageFromS3Bucket(QI_BACKGROUND_BUCKET, backgroundKey)
 }
