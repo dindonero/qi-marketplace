@@ -20,12 +20,12 @@ export const getYiqiNFTByTokenIdFromDb = async (tokenId: number) => {
 }
 
 export const getAllYiqiBaseFilesFromDb = async () => {
-    const fileNameAttribute = "fileName";
-    const command = new ScanCommand({TableName: NFT_TABLE_NAME, ProjectionExpression: fileNameAttribute});
+    const filenameAttribute = "filename";
+    const command = new ScanCommand({TableName: NFT_TABLE_NAME, ProjectionExpression: filenameAttribute});
 
     const response = await ddbClient.send(command);
 
-    return response.Items?.map((item) => item[fileNameAttribute].S!);
+    return response.Items?.map((item) => item[filenameAttribute].S!);
 }
 
 export const storeYiqiNFTInDb = async (tokenId: number, filename: string, backgroundTokenId: number) => {
