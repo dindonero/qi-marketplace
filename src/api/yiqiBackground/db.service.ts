@@ -15,12 +15,12 @@ export const getBackgroundByTokenIdFromDb = async (tokenId: number) => {
     return result.Item;
 }
 
-export const storeBackgroundInDb = async (tokenId: number, fileName: string) => {
+export const storeBackgroundInDb = async (tokenId: number, filename: string) => {
     const params = {
         TableName: BACKGROUND_TABLE_NAME,
         Item: {
             ["tokenId"]: { N: tokenId.toString() },
-            ["fileName"]: { S: fileName },
+            ["filename"]: { S: filename },
         },
     };
     const command = new PutItemCommand(params);

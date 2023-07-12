@@ -34,7 +34,7 @@ export const getYiqiNFT = async (id: number): Promise<any> => {
 export const getYiqiBaseImage = async (tokenId: number) => {
 
     const yiqiNFT = await getYiqiNFTByTokenIdFromDb(tokenId)
-    const baseImageKey = yiqiNFT.fileName.S!
+    const baseImageKey = yiqiNFT.filename.S!
 
     return getImageFromS3Bucket(QI_TRANSPARENT_BUCKET, baseImageKey)
 }
@@ -42,10 +42,10 @@ export const getYiqiBaseImage = async (tokenId: number) => {
 export const getTransparentURL = async (tokenId: number) => {
 
     const yiqiNFT = await getYiqiNFTByTokenIdFromDb(tokenId)
-    const baseImageKey = yiqiNFT.fileName.S!
+    const baseImageKey = yiqiNFT.filename.S!
 
     const backgroundFilenameRec = await getBackgroundByTokenIdFromDb(+yiqiNFT.backgroundTokenId.N!)
-    const backgroundFilename = backgroundFilenameRec!.fileName.S!
+    const backgroundFilename = backgroundFilenameRec!.filename.S!
 
     return {
         image: `https://${QI_TRANSPARENT_BUCKET}.s3.amazonaws.com/${baseImageKey}`,
@@ -60,7 +60,7 @@ export const mintYiqiNFT = async (tokenId: number) => {
     // if transparent filename is not stored in db, generate it
     let transparentImageKey: string = ""
     if (await yiqiNFTExistsInDb(tokenId)) {
-        transparentImageKey = (await getYiqiNFTByTokenIdFromDb(tokenId)).fileName.S!
+        transparentImageKey = (await getYiqiNFTByTokenIdFromDb(tokenId)).filename.S!
     } else {
         // hack for concurrent requests that mint the same filename
         let gotUniqueFilename = false
@@ -76,7 +76,7 @@ export const mintYiqiNFT = async (tokenId: number) => {
     // if background filename is not stored in db, generate it
     let backgroundImageKey: string
     if (await backgroundExistsInDb(backgroundTokenId)) {
-        backgroundImageKey = (await getBackgroundByTokenIdFromDb(backgroundTokenId))!.fileName.S!
+        backgroundImageKey = (await getBackgroundByTokenIdFromDb(backgroundTokenId))!.filename.S!
     } else {
         backgroundImageKey = await getRandomKeyFromS3Bucket(QI_BACKGROUND_BUCKET)
         await storeBackgroundInDb(backgroundTokenId, backgroundImageKey)
