@@ -3,15 +3,23 @@ import {Card} from "web3uikit"
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {Box, Spinner} from "@chakra-ui/react";
+import {requestBackgroundMetadata, requestNFTMetadata, requestNFTMetadataBackend} from "@/nftMetadata/fetchMetadata";
 
-export default function NFTBox({tokenId, tokenMetadataPromise, isBackground}: any) {
+export default function NFTBox({tokenId, isBackground}: any) {
 
     const [tokenMetadata, setTokenMetadata] = useState<any>(undefined);
     const router = useRouter();
 
     const handleTokenMetadataPromise = async () => {
-        const fetchedTokenMetadata = await tokenMetadataPromise
-        const jsonTokenMetadata = await fetchedTokenMetadata.json()
+        let nftMetadata
+        if (!isBackground) {
+            nftMetadata = await requestNFTMetadata(tokenId)
+        } else {
+            nftMetadata = await requestBackgroundMetadata(tokenId)
+        }
+        console.log(nftMetadata)
+        const jsonTokenMetadata = await nftMetadata.json()
+        console.log(jsonTokenMetadata)
         setTokenMetadata(jsonTokenMetadata)
     }
 

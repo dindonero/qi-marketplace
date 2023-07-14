@@ -39,3 +39,16 @@ export const getYiqiNFTOwner = async (tokenId: number): Promise<string> => {
     const yiqiContract = await getYiqiContract()
     return yiqiContract.ownerOf(tokenId)
 }
+
+export const verifyYiqiNFTExists = async (tokenId: number) => {
+    const yiqiContract = await getYiqiContract()
+    try {
+        await yiqiContract.ownerOf(tokenId)
+        return true
+    } catch (error: any) {
+        if (error.reason === "ERC721: invalid token ID")
+            return false
+        else
+            throw new Error(error.reason)
+    }
+}
