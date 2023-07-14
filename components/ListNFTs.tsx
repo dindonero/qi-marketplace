@@ -15,38 +15,20 @@ const ListNFTs = (props: ListNFTsProps) => {
 
     const {isWeb3Enabled, account} = useMoralis()
 
-    const [listedNfts, setListedNfts] = useState<any>({})
+    const [listedTokenIds, setListedTokenIds] = useState<number[] | undefined>(undefined)
     const [isFetchingNfts, setIsFetchingNfts] = useState<boolean>(true)
 
-    const fetchNFTMetadata = async () => {
-        const tokenIds = await getTokenIdsOwnedByUser(account!, props.nftAddress)
-        let nftMetadatas
-        if (!props.isBackground) {
-            nftMetadatas = await requestNFTMetadataBackend(tokenIds)
-        } else {
-            nftMetadatas = await requestBackgroundMetadataBackend(tokenIds)
-        }
-        return nftMetadatas
-    }
-
-    const fetchOwnedNfts = async () => {
+    const fetchOwnedTokenIds = async () => {
         setIsFetchingNfts(true)
-        const ownedNfts = await fetchNFTMetadata()
-        setListedNfts(ownedNfts)
+        const tokenIds = await getTokenIdsOwnedByUser(account!, props.nftAddress)
+        console.log(tokenIds)
+        setListedTokenIds(tokenIds)
         setIsFetchingNfts(false)
-    }
-
-    const isEmpty = (obj: any) => {
-        return Object.keys(obj).length === 0;
-    }
-
-    async function updateUI() {
-        await fetchOwnedNfts()
     }
 
     useEffect(() => {
         if (isWeb3Enabled) {
-            updateUI()
+            fetchOwnedTokenIds()
         }
     }, [isWeb3Enabled, account])
 
@@ -58,14 +40,13 @@ const ListNFTs = (props: ListNFTsProps) => {
                     isFetchingNfts ? (
                         <div>Loading...</div>
                     ) : (
-                        isEmpty(listedNfts) ? (
+                        listedTokenIds?.length == 0 ? (
                             <div>No NFTs Owned</div>
                         ) : (
-                            Object.keys(listedNfts).map((tokenId) => {
+                            listedTokenIds?.map((tokenId) => {
                                 return (
                                     <NFTBox
                                         tokenId={tokenId}
-                                        tokenMetadataPromise={listedNfts[tokenId]}
                                         key={tokenId}
                                         isBackground={props.isBackground}
                                     />
