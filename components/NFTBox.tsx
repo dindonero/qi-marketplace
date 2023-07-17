@@ -17,9 +17,7 @@ export default function NFTBox({tokenId, isBackground}: any) {
         } else {
             nftMetadata = await requestBackgroundMetadata(tokenId)
         }
-        console.log(nftMetadata)
         const jsonTokenMetadata = await nftMetadata.json()
-        console.log(jsonTokenMetadata)
         setTokenMetadata(jsonTokenMetadata)
     }
 

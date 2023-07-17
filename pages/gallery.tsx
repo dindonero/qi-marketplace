@@ -52,12 +52,12 @@ const ListAllTokens: NextPage = () => {
     return (
         <div>
             {isWeb3Enabled ? (
-                isFetchingTokens ? (
+                listedTokens.length == 0 ? (
                     <div>Loading...</div>
                 ) : (
                     <div>
                         <div className="flex flex-wrap justify-center">
-                            {Object.keys(listedTokens).map((tokenId) => {
+                            {listedTokens.map((tokenId) => {
                                 return (
                                     <NFTBox
                                         tokenId={tokenId}
